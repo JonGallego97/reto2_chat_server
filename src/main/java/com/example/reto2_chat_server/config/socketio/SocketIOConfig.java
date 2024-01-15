@@ -1,8 +1,10 @@
 package com.example.reto2_chat_server.config.socketio;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
+import com.example.reto2_chat_server.model.DataType;
 import com.example.reto2_chat_server.model.MessageFromClient;
 import com.example.reto2_chat_server.model.MessageFromServer;
+import com.example.reto2_chat_server.model.MessageType;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
@@ -32,7 +34,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://localhost:8080");
+		config.setOrigin("http://10.5.7.28:8080");
 
 		server = new SocketIOServer(config);
 
@@ -63,6 +65,7 @@ public class SocketIOConfig {
 				client.disconnect();
 			}else {
 				loadClientData(headers,client);
+				
 				System.out.printf("Nuevo cliente conectado: %s . Clientes conectados ahora mismo: %d \n", client.getSessionId(), this.server.getAllClients().size());
 
 			}
@@ -73,6 +76,11 @@ public class SocketIOConfig {
 				String authorization = headers.get(AUTHORIZATION_HEADER);
 				String jwt = authorization.split(" ")[1];
 				// TODO FALTA VALIDAR EL TOKEN Y OBTENER LOS DATOS
+				Integer asd = (int) Math.round(Math.random()+1);
+				String asd2 = asd.toString();
+				client.set(CLIENT_USER_ID_PARAM,asd2 );
+				client.set(CLIENT_USER_NAME_PARAM, "User"+ Math.random());
+				client.joinRoom("default-room");
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -96,18 +104,22 @@ public class SocketIOConfig {
 		}
 		private void notificateDisconnectToUsers(SocketIOClient client) {
 			//TODO actualizar campos segun el token
-			System.out.println("user disconnected");
-
-			/*
 			String room = null;
-			String message = "el usuario se ha desconectado salido";
+			String message = "el usuario se ha desconectado";
 			String authorIdS = client.get(CLIENT_USER_ID_PARAM);
 			Integer authorId = Integer.valueOf(authorIdS);
 			String authorName = client.get(CLIENT_USER_NAME_PARAM);
-
-			MessageFromServer messageFromServer = new MessageFromServer();
+			
+			MessageFromServer messageFromServer = new MessageFromServer(
+					MessageType.CLIENT, 
+					message, 
+					room, 
+					DataType.TEXT, 
+					authorId, 
+					authorName
+					);
 			client.getNamespace().getBroadcastOperations().sendEvent(SocketEvents.ON_SEND_MESSAGE.value, messageFromServer);
-			*/
+			 
 		}
 
 
@@ -117,13 +129,22 @@ public class SocketIOConfig {
 		return (senderClient, data ,ackowledge) -> {
 
 			String authorIdS = senderClient.get(CLIENT_USER_ID_PARAM);
-			Integer authorId = 1;
+			Integer authorId = Integer.valueOf(authorIdS);
 			String authorName = senderClient.get(CLIENT_USER_NAME_PARAM);
+			System.out.printf("Mensaje recibido de (%d) %s. El mensaje es el siguiente: %s \n", authorId, authorName, data.toString());
+
 
 
 			if(checkIfIsAllowedToSend(senderClient, data.getRoom())) {
 				//TODO completar el constructor
-				MessageFromServer messageFromServer = new MessageFromServer();
+				MessageFromServer messageFromServer = new MessageFromServer(
+						MessageType.CLIENT, 
+						data.getMessage(), 
+						data.getRoom(), 
+						DataType.TEXT, 
+						authorId, 
+						authorName
+						);
 				server.getRoomOperations(data.getRoom()).sendEvent(SocketEvents.ON_SEND_MESSAGE.value, messageFromServer);
 
 
