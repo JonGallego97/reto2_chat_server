@@ -25,6 +25,12 @@ public class SocketController {
 		this.socketIOServer = socketIOServer;
 	}
 
+	@GetMapping("/chats")
+	public String chats() {
+		System.out.println("android");
+		return "enviado";
+	}
+	
 	@GetMapping("/send-message")
 	public String sendMessage() {
 		//TODO modificar el constructor
