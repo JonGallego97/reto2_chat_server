@@ -42,7 +42,6 @@ public class SocketController {
 	@PostMapping("/join-chat/{chat}/{idUser}")
 	public String joinChat(
 
-			//TODO ¿deberia ser el id del chat y del user? el metodo joinroom acepta un string por parametro
 			@PathVariable String chatId,
 			@PathVariable Integer idUser) {
 		SocketIOClient client = findClientByUserId(idUser);

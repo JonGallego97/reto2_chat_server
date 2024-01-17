@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.reto2_chat_server.security.user.repository.UserDAO;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,7 +66,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	}
 	
 	private UserDetails getUserDetails(String token) {
-		return null;
+		UserDAO userDetails = new UserDAO();
+		userDetails.setId(jwtUtil.getUserId(token));
+		userDetails.setEmail(jwtUtil.getUserEmail(token));
+		userDetails.setName(jwtUtil.getUserName(token));
+		userDetails.setSurname1(jwtUtil.getUserSurname1(token));
+		userDetails.setSurname2(jwtUtil.getUserSurname2(token));
+		userDetails.setDNI(jwtUtil.getUserDNI(token));
+		userDetails.setAddress(jwtUtil.getUserAddress(token));
+		userDetails.setPhoneNumber1(jwtUtil.getUserPhone1(token));
+		userDetails.setPhoneNumber2(jwtUtil.getUserPhone2(token));
+		//userDetails.setImage(jwtUtil.getUserImage(token));
+		userDetails.setDual(jwtUtil.getUserDual(token));
+		userDetails.setFirstLogin(jwtUtil.getFirstLogin(token));
+		userDetails.setListRoles(jwtUtil.getUserRoles(token));
+		userDetails.setDepartment(jwtUtil.getUserDepartment(token));
+
+		return userDetails;
 	}
 
 }

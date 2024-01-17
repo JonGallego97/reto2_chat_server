@@ -24,8 +24,8 @@ public class SocketIOConfig {
 
 	private SocketIOServer server;
 
-	public final static String CLIENT_USER_NAME_PARAM = "authorname";
-	public final static String CLIENT_USER_ID_PARAM = "authorid";
+	public final static String CLIENT_USER_NAME_PARAM = "email";
+	public final static String CLIENT_USER_ID_PARAM = "id";
 	public final static String AUTHORIZATION_HEADER = "Authorization";
 
 	@Bean
@@ -76,11 +76,13 @@ public class SocketIOConfig {
 				String authorization = headers.get(AUTHORIZATION_HEADER);
 				String jwt = authorization.split(" ")[1];
 				// TODO FALTA VALIDAR EL TOKEN Y OBTENER LOS DATOS
-				Integer asd = (int) Math.round(Math.random()+1);
-				String asd2 = asd.toString();
-				client.set(CLIENT_USER_ID_PARAM,asd2 );
-				client.set(CLIENT_USER_NAME_PARAM, "User"+ Math.random());
+				String [] data = jwt.split(":");
+				String userId = data[0];
+				String userEmail = data[1];
+				client.set(CLIENT_USER_ID_PARAM,userId );
+				client.set(CLIENT_USER_NAME_PARAM, userEmail);
 				client.joinRoom("default-room");
+				
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -129,7 +131,8 @@ public class SocketIOConfig {
 		return (senderClient, data ,ackowledge) -> {
 
 			String authorIdS = senderClient.get(CLIENT_USER_ID_PARAM);
-			Integer authorId = Integer.valueOf(authorIdS);
+			// System.out.println(authorIdS);
+			Integer authorId = 1;
 			String authorName = senderClient.get(CLIENT_USER_NAME_PARAM);
 			System.out.printf("Mensaje recibido de (%d) %s. El mensaje es el siguiente: %s \n", authorId, authorName, data.toString());
 

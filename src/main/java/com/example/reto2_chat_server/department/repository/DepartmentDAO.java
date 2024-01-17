@@ -1,4 +1,4 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.department.repository;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,22 +8,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name="departments")
+public class DepartmentDAO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(unique = true)
-	private String name;
 	
-	public Role() {
-		super();
-	}
+	@Column(unique = true, nullable = false)
+	private String name;
 
-	public Role(Integer id, String name) {
+	public DepartmentDAO(Integer id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
+	}
+
+	public DepartmentDAO() {
+		super();
 	}
 
 	public Integer getId() {
@@ -41,7 +42,6 @@ public class Role {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 	
 	
 
