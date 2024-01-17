@@ -1,6 +1,7 @@
 package com.example.reto2_chat_server.security.configuration;
 
 import java.sql.Blob;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -118,8 +119,19 @@ public class JwtTokenUtil {
 		return (Boolean) parseClaims(token).get("firstLogin");
 	}
 	public List<Role> getUserRoles(String token) {
-		return (List<Role>) parseClaims(token).get("listRoles");
+	    Object rolesObject = parseClaims(token).get("listRoles");
+
+	    if (rolesObject instanceof List<?>) {
+	        List<?> rolesList = (List<?>) rolesObject;
+
+	        if (!rolesList.isEmpty() && rolesList.get(0) instanceof Role) {
+	            return (List<Role>) rolesObject;
+	        }
+	    }
+
+	    return Collections.emptyList();
 	}
+
 	public DepartmentDAO getUserDepartment(String token) {
 		return (DepartmentDAO) parseClaims(token).get("department");
 	}

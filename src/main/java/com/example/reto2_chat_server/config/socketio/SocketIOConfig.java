@@ -6,8 +6,12 @@ import com.example.reto2_chat_server.model.MessageFromClient;
 import com.example.reto2_chat_server.model.MessageFromServer;
 import com.example.reto2_chat_server.model.MessageType;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
+
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +19,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SocketIOConfig {
+	
+	
 
 	@Value("${socket-server.host}")
 	private String host;
@@ -62,6 +68,7 @@ public class SocketIOConfig {
 			HttpHeaders headers = client.getHandshakeData().getHttpHeaders();
 
 			if (headers.get(AUTHORIZATION_HEADER)== null) {
+				
 				client.disconnect();
 			}else {
 				loadClientData(headers,client);
@@ -76,10 +83,18 @@ public class SocketIOConfig {
 				String authorization = headers.get(AUTHORIZATION_HEADER);
 				String jwt = authorization.split(" ")[1];
 				// TODO FALTA VALIDAR EL TOKEN Y OBTENER LOS DATOS
-				String [] data = jwt.split(":");
-				String userId = data[0];
-				String userEmail = data[1];
-				client.set(CLIENT_USER_ID_PARAM,userId );
+				Claims claims = Jwts.parser()
+			            .setSigningKey("APP_KEY") 
+			            .parseClaimsJws(jwt)
+			            .getBody();
+				for (Map.Entry<String, Object> entry : claims.entrySet()) {
+		            String key = entry.getKey();
+		            Object value = entry.getValue();
+		            System.out.printf("Claim: %s = %s%n", key, value);
+		        }
+		        Integer userId = claims.get("id", Integer.class);
+		        String userEmail = claims.get("sub", String.class);
+				client.set(CLIENT_USER_ID_PARAM,userId.toString() );
 				client.set(CLIENT_USER_NAME_PARAM, userEmail);
 				client.joinRoom("default-room");
 				
@@ -129,12 +144,12 @@ public class SocketIOConfig {
 	}
 	private DataListener<MessageFromClient> onSendMessage() {
 		return (senderClient, data ,ackowledge) -> {
-
 			String authorIdS = senderClient.get(CLIENT_USER_ID_PARAM);
-			// System.out.println(authorIdS);
-			Integer authorId = 1;
+			Integer authorId = Integer.valueOf(authorIdS);
 			String authorName = senderClient.get(CLIENT_USER_NAME_PARAM);
-			System.out.printf("Mensaje recibido de (%d) %s. El mensaje es el siguiente: %s \n", authorId, authorName, data.toString());
+			
+			
+	        System.out.printf("Mensaje recibido de (ID: %d, Email: %s). El mensaje es el siguiente: %s \n", authorId, authorName, data.toString());
 
 
 
@@ -145,9 +160,12 @@ public class SocketIOConfig {
 						data.getMessage(), 
 						data.getRoom(), 
 						DataType.TEXT, 
-						authorId, 
+						authorId,
 						authorName
 						);
+				System.out.printf(authorId.toString());
+				System.out.printf(authorName.toString());
+
 				server.getRoomOperations(data.getRoom()).sendEvent(SocketEvents.ON_SEND_MESSAGE.value, messageFromServer);
 
 
