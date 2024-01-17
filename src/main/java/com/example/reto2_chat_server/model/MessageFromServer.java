@@ -56,6 +56,11 @@ public class MessageFromServer {
 	public MessageFromServer() {
 		super();
 	}
+	@Override
+	public String toString() {
+		return "MessageFromServer [messageType=" + messageType + ", message=" + message + ", room=" + room
+				+ ", dataType=" + dataType + ", authorId=" + authorId + ", authorName=" + authorName + "]";
+	}
 	
 	
 

@@ -24,5 +24,10 @@ public class MessageFromClient {
 		this.room = room;
 		this.message = message;
 	}
+	@Override
+	public String toString() {
+		return "MessageFromClient [room=" + room + ", message=" + message + "]";
+	}
 
+	
 }
