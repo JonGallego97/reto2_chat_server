@@ -12,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.reto2_chat_server.security.user.repository.UserDAO;
+import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +38,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		
 		setAuthenticationContext(token, request);
 		filterChain.doFilter(request, response);
 		
@@ -46,6 +46,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private boolean hasAuthorizationBearer(HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		if(ObjectUtils.isEmpty(header) || !header.startsWith("Bearer ")) {
+
 			return false;
 		}
 		return true;
@@ -59,14 +60,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	
 	private void setAuthenticationContext(String token, HttpServletRequest request) {
 		UserDetails userDetails = getUserDetails(token);
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 	}
 	
 	private UserDetails getUserDetails(String token) {
-		UserDAO userDetails = new UserDAO();
+		UserServiceModel userDetails = new UserServiceModel();
 		userDetails.setId(jwtUtil.getUserId(token));
 		userDetails.setEmail(jwtUtil.getUserEmail(token));
 		userDetails.setName(jwtUtil.getUserName(token));
@@ -79,7 +80,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		//userDetails.setImage(jwtUtil.getUserImage(token));
 		userDetails.setDual(jwtUtil.getUserDual(token));
 		userDetails.setFirstLogin(jwtUtil.getFirstLogin(token));
-		userDetails.setListRoles(jwtUtil.getUserRoles(token));
+		userDetails.setRoles(jwtUtil.getUserRoles(token));
 		userDetails.setDepartment(jwtUtil.getUserDepartment(token));
 
 		return userDetails;

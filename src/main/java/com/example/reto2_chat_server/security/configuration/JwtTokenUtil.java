@@ -1,7 +1,6 @@
 package com.example.reto2_chat_server.security.configuration;
 
 import java.sql.Blob;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.example.reto2_chat_server.department.repository.DepartmentDAO;
+import com.example.reto2_chat_server.department.service.DepartmentServiceModel;
 import com.example.reto2_chat_server.model.Role;
+import com.example.reto2_chat_server.model.RoleServiceModel;
 import com.example.reto2_chat_server.security.user.repository.UserDAO;
+import com.example.reto2_chat_server.security.user.service.UserServiceModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,29 +34,31 @@ public class JwtTokenUtil {
 	@Value("${app.jwt.secret}")
 	private String SECRET_KEY;
 
-	public String generateAccessToken(UserDAO userDAO) {
+	public String generateAccessToken(UserServiceModel userServiceModel) {
 		return Jwts.builder()
 				.setHeaderParam("typ", "JWT")
-				.setSubject(userDAO.getEmail())
+				.setSubject(userServiceModel.getEmail())
 				.setIssuer("ADT_DAM")
 				.setExpiration(new Date(System.currentTimeMillis()+ EXPIRE_DURATION))
-				.claim("id", userDAO.getId())
-				.claim("name", userDAO.getName())
-				.claim("surname1", userDAO.getSurname1())
-				.claim("surname2", userDAO.getSurname2())
-				.claim("address", userDAO.getAddress())
-				.claim("DNI", userDAO.getDNI())
-				.claim("phoneNumber1", userDAO.getPhoneNumber1())
-				.claim("phoneNumber2", userDAO.getPhoneNumber2())
+				.claim("id", userServiceModel.getId())
+				.claim("name", userServiceModel.getName())
+				.claim("email", userServiceModel.getEmail())
+				.claim("surname1", userServiceModel.getSurname1())
+				.claim("surname2", userServiceModel.getSurname2())
+				.claim("address", userServiceModel.getAddress())
+				.claim("DNI", userServiceModel.getDNI())
+				.claim("phoneNumber1", userServiceModel.getPhoneNumber1())
+				.claim("phoneNumber2", userServiceModel.getPhoneNumber2())
 				//.claim("image", userDAO.getImage())
-				.claim("dual", userDAO.getDual())
-				.claim("firstLogin", userDAO.getFirstLogin())
-				.claim("listRoles", userDAO.getListRoles())
-				.claim("department", userDAO.getDepartment())
+				.claim("dual", userServiceModel.getDual())
+				.claim("firstLogin", userServiceModel.getFirstLogin())
+				.claim("listRoles", userServiceModel.getRoles())
+				.claim("department", userServiceModel.getDepartment())
 
 	
 				.signWith(SignatureAlgorithm.HS512, SECRET_KEY)
 				.compact();
+		
 
 	}
 
@@ -60,20 +66,28 @@ public class JwtTokenUtil {
 		try {
 			
 			Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+
 			
 			return true;
 			// TODO: handle exception
 		} catch (ExpiredJwtException ex) {
+
 			LOGGER.error("JWT expired", ex.getMessage());
+
 		} catch (IllegalArgumentException ex) {
 			LOGGER.error("Token is null, empty or only whitespace", ex.getMessage());
+
 		} catch (MalformedJwtException ex) {
 			LOGGER.error("JWT is invalid", ex);
+
 		} catch (UnsupportedJwtException ex) {
 			LOGGER.error("JWT is not supported", ex);
+
 		} catch (SignatureException ex) {
 			LOGGER.error("Signature validation failed");
+
 		}
+
 		return false;
 	}
 
@@ -118,22 +132,14 @@ public class JwtTokenUtil {
 	public Boolean getFirstLogin(String token) {
 		return (Boolean) parseClaims(token).get("firstLogin");
 	}
-	public List<Role> getUserRoles(String token) {
-	    Object rolesObject = parseClaims(token).get("listRoles");
-
-	    if (rolesObject instanceof List<?>) {
-	        List<?> rolesList = (List<?>) rolesObject;
-
-	        if (!rolesList.isEmpty() && rolesList.get(0) instanceof Role) {
-	            return (List<Role>) rolesObject;
-	        }
-	    }
-
-	    return Collections.emptyList();
+	public List<RoleServiceModel> getUserRoles(String token) {
+		return (List<RoleServiceModel>) parseClaims(token).get("listRoles");
 	}
+	public DepartmentServiceModel getUserDepartment(String token) {
+		Gson gson = new Gson();
+		String json = gson.toJson(parseClaims(token).get("department"));
+	    return gson.fromJson(json, new TypeToken<DepartmentServiceModel>() {}.getType());
 
-	public DepartmentDAO getUserDepartment(String token) {
-		return (DepartmentDAO) parseClaims(token).get("department");
 	}
 	
 	
