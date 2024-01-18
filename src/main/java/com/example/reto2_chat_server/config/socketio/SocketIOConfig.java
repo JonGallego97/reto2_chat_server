@@ -87,11 +87,7 @@ public class SocketIOConfig {
 			            .setSigningKey("APP_KEY") 
 			            .parseClaimsJws(jwt)
 			            .getBody();
-				for (Map.Entry<String, Object> entry : claims.entrySet()) {
-		            String key = entry.getKey();
-		            Object value = entry.getValue();
-		            System.out.printf("Claim: %s = %s%n", key, value);
-		        }
+				
 		        Integer userId = claims.get("id", Integer.class);
 		        String userEmail = claims.get("sub", String.class);
 				client.set(CLIENT_USER_ID_PARAM,userId.toString() );

@@ -72,6 +72,7 @@ public class UserDAO implements UserDetails {
 	@JsonIgnore
 	private List<Role> listRoles;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
 	private DepartmentDAO department;
