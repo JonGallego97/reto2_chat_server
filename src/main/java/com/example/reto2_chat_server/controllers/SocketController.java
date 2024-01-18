@@ -1,5 +1,4 @@
 package com.example.reto2_chat_server.controllers;
-
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,6 @@ public class SocketController {
 	@Autowired
 	public SocketController(SocketIOServer socketIOServer) {
 		this.socketIOServer = socketIOServer;
-	}
-
-	@GetMapping("/chats")
-	public String chats() {
-		System.out.println("android");
-		return "enviado";
 	}
 	
 	@GetMapping("/send-message")

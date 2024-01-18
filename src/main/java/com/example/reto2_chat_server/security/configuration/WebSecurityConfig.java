@@ -40,7 +40,7 @@ public class WebSecurityConfig {
 		.authorizeHttpRequests((requests) -> requests
 				//TODO Revisar si hay que permitir alguno más
 				
-				//.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 				//.requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()
 
 
@@ -52,7 +52,7 @@ public class WebSecurityConfig {
 				
 
 				
-				.anyRequest().permitAll()
+				.anyRequest().authenticated()
 				
 				).exceptionHandling((exceptionHandling) ->
 				
