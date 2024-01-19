@@ -6,9 +6,12 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.reto2_chat_server.chat.service.ChatServiceModel;
 import com.example.reto2_chat_server.department.service.DepartmentServiceModel;
 import com.example.reto2_chat_server.model.RoleServiceModel;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserServiceModel implements UserDetails {
     /**
 	 * 
@@ -27,6 +30,52 @@ public class UserServiceModel implements UserDetails {
     private Boolean firstLogin;
     private List<RoleServiceModel> roles;
     private DepartmentServiceModel department;
+    
+   private List<ChatServiceModel> listChats;
+   
+   
+	public List<ChatServiceModel> getListChats() {
+	return listChats;
+}
+
+
+public UserServiceModel(Integer id, String email, String name, String surname1, String surname2
+			 ) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.surname1 = surname1;
+		this.surname2 = surname2;
+	}
+
+
+public void setListChats(List<ChatServiceModel> listChats) {
+	this.listChats = listChats;
+}
+
+
+	public UserServiceModel(Integer id, String email, String name, String surname1, String surname2, String dNI,
+		String address, Integer phoneNumber1, Integer phoneNumber2, Boolean dual, Boolean firstLogin,
+		List<RoleServiceModel> roles, DepartmentServiceModel department, List<ChatServiceModel> listChats) {
+	super();
+	this.id = id;
+	this.email = email;
+	this.name = name;
+	this.surname1 = surname1;
+	this.surname2 = surname2;
+	DNI = dNI;
+	this.address = address;
+	this.phoneNumber1 = phoneNumber1;
+	this.phoneNumber2 = phoneNumber2;
+	this.dual = dual;
+	this.firstLogin = firstLogin;
+	this.roles = roles;
+	this.department = department;
+	this.listChats = listChats;
+}
+
+
 	public UserServiceModel(Integer id, String email, String name, String surname1, String surname2, String dNI,
 			String address, Integer phoneNumber1, Integer phoneNumber2, Boolean dual, Boolean firstLogin,
 			List<RoleServiceModel> roles, DepartmentServiceModel department) {
@@ -67,6 +116,21 @@ public class UserServiceModel implements UserDetails {
 	public UserServiceModel() {
 		super();
 	}
+
+
+
+	public UserServiceModel(Integer id, String email, String name, String surname1, String surname2,
+			Integer phoneNumber1) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.surname1 = surname1;
+		this.surname2 = surname2;
+		this.phoneNumber1 = phoneNumber1;
+	}
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -194,7 +258,5 @@ public class UserServiceModel implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
-
- 
+	
 }

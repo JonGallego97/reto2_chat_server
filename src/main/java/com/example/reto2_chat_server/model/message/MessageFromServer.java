@@ -1,4 +1,4 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.model.message;
 
 public class MessageFromServer {
 	private MessageType messageType;

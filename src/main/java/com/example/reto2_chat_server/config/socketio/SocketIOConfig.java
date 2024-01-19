@@ -1,17 +1,15 @@
 package com.example.reto2_chat_server.config.socketio;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
-import com.example.reto2_chat_server.model.DataType;
-import com.example.reto2_chat_server.model.MessageFromClient;
-import com.example.reto2_chat_server.model.MessageFromServer;
-import com.example.reto2_chat_server.model.MessageType;
+import com.example.reto2_chat_server.model.message.DataType;
+import com.example.reto2_chat_server.model.message.MessageFromClient;
+import com.example.reto2_chat_server.model.message.MessageFromServer;
+import com.example.reto2_chat_server.model.message.MessageType;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
-
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +38,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://10.5.7.25:8080");
+		config.setOrigin("http://10.5.7.28:8080");
 
 		server = new SocketIOServer(config);
 

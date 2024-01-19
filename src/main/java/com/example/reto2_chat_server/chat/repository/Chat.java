@@ -1,12 +1,8 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.chat.repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
+import com.example.reto2_chat_server.model.message.Message;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,16 +24,21 @@ public class Chat {
 	private boolean isPublic;
 	@Column(length = 60)
 	private String name;
+	
 	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval =  true, fetch = FetchType.LAZY)
 	@JsonBackReference
-	private List<Message> mesages;
-	@OneToMany(mappedBy = "chat")
-	private List<User_Chat> users;
+	private List<Message> messages;
 	
-	@Override
-	public String toString() {
-		return "Chat [id=" + id + ", isPublic=" + isPublic + ", name=" + name + ", mesages=" + mesages + ", users="
-				+ users + "]";
+	@OneToMany(mappedBy = "chat")
+	private List<UsersFromChatDAO> users;
+
+	public Chat(int id, boolean isPublic, String name, List<Message> messages, List<UsersFromChatDAO> users) {
+		super();
+		this.id = id;
+		this.isPublic = isPublic;
+		this.name = name;
+		this.messages = messages;
+		this.users = users;
 	}
 
 	public int getId() {
@@ -64,35 +65,33 @@ public class Chat {
 		this.name = name;
 	}
 
-	public List<Message> getMesages() {
-		return mesages;
+	public List<Message> getMessages() {
+		return messages;
 	}
 
-	public void setMesages(List<Message> mesages) {
-		this.mesages = mesages;
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
 	}
 
-	public List<User_Chat> getUsers() {
+	public List<UsersFromChatDAO> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User_Chat> users) {
-		this.users = users;
-	}
-
-
-	public Chat(int id, boolean isPublic, String name, List<Message> mesages, List<User_Chat> users) {
-		super();
-		this.id = id;
-		this.isPublic = isPublic;
-		this.name = name;
-		this.mesages = mesages;
+	public void setUsers(List<UsersFromChatDAO> users) {
 		this.users = users;
 	}
 
 	public Chat() {
 		super();
 	}
+
+	@Override
+	public String toString() {
+		return "Chat [id=" + id + ", isPublic=" + isPublic + ", name=" + name + ", messages=" + messages + ", users="
+				+ users + "]";
+	}
+	
+
 	
 	
 	

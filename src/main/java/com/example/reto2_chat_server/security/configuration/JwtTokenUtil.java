@@ -9,11 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.example.reto2_chat_server.department.repository.DepartmentDAO;
 import com.example.reto2_chat_server.department.service.DepartmentServiceModel;
-import com.example.reto2_chat_server.model.Role;
 import com.example.reto2_chat_server.model.RoleServiceModel;
-import com.example.reto2_chat_server.security.user.repository.UserDAO;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
