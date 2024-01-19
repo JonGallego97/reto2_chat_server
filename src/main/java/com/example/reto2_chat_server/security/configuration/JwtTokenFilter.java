@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.reto2_chat_server.security.user.repository.UserDAO;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
 import jakarta.servlet.FilterChain;

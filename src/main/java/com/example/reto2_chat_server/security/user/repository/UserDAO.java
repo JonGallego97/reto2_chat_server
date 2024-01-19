@@ -10,7 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.reto2_chat_server.department.repository.DepartmentDAO;
+import com.example.reto2_chat_server.department.service.DepartmentServiceModel;
 import com.example.reto2_chat_server.model.Role;
+import com.example.reto2_chat_server.model.RoleServiceModel;
+import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -277,5 +280,66 @@ public class UserDAO implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+public UserServiceModel convertFromDAOtoService(UserDAO userDAO) {
+
+		
+		List <RoleServiceModel> listRoles = new ArrayList<RoleServiceModel>();
+
+		UserServiceModel response = new UserServiceModel(
+				userDAO.getId(),
+				userDAO.getEmail(),
+				userDAO.getName(),
+				userDAO.getSurname1(),
+				userDAO.getSurname2(),
+				userDAO.getDNI(),
+				userDAO.getAddress(),
+				userDAO.getPhoneNumber1(),
+				userDAO.getPhoneNumber2(),
+				userDAO.getDual(),
+				userDAO.getFirstLogin());
+		System.out.println(userDAO.getEmail());
+
+		try {
+			for(Role role : userDAO.getListRoles()) {
+				RoleServiceModel roleServiceModel = new RoleServiceModel(role.getId(), role.getName());
+				listRoles.add(roleServiceModel);
+
+
+			}
+			response.setRoles(listRoles);
+
+		}catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+
+		if(userDAO.getDepartment() != null) {
+			DepartmentServiceModel departmentServiceModel = new DepartmentServiceModel(
+					userDAO.getDepartment().getId(),
+					userDAO.getDepartment().getName());
+			response.setDepartment(departmentServiceModel);
+		}
+
+		return response;
+
+
+	}
+
+public UserServiceModel convertFromDAOtoServiceResumedForMessages(UserDAO userDAO) {
+
+	UserServiceModel response = new UserServiceModel(
+			userDAO.getId(),
+			userDAO.getEmail(),
+			userDAO.getName(),
+			userDAO.getSurname1(),
+			userDAO.getSurname2(),
+			userDAO.getPhoneNumber1());
+	return response;
+		
+
+
+
+}
 
 }

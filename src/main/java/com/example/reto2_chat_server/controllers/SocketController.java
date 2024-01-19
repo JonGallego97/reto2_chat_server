@@ -2,7 +2,6 @@ package com.example.reto2_chat_server.controllers;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,9 +12,9 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.example.reto2_chat_server.config.socketio.SocketEvents;
 import com.example.reto2_chat_server.config.socketio.SocketIOConfig;
-import com.example.reto2_chat_server.model.DataType;
-import com.example.reto2_chat_server.model.MessageFromServer;
-import com.example.reto2_chat_server.model.MessageType;
+import com.example.reto2_chat_server.model.message.DataType;
+import com.example.reto2_chat_server.model.message.MessageFromServer;
+import com.example.reto2_chat_server.model.message.MessageType;
 
 @RestController
 @RequestMapping("/api/sockets")
