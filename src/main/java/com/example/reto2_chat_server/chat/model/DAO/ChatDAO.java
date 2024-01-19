@@ -1,4 +1,4 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.chat.model.DAO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +19,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "chats")
-public class Chat {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class ChatDAO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,15 +31,17 @@ public class Chat {
 	private String name;
 	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval =  true, fetch = FetchType.LAZY)
 	@JsonBackReference
-	private List<Message> mesages;
+	private List<MessageDAO> mesages;
 	@OneToMany(mappedBy = "chat")
-	private List<User_Chat> users;
+	private List<User_ChatDAO> users;
 	
 	@Override
-	public String toString() {
-		return "Chat [id=" + id + ", isPublic=" + isPublic + ", name=" + name + ", mesages=" + mesages + ", users="
-				+ users + "]";
-	}
+    public String toString() {
+        return "Chat [id=" + id + ", isPublic=" + isPublic + ", name=" + name +
+                ", mesages=" + mesages + ", users=" +
+                (users != null ? users.stream().map(User_ChatDAO::toString).collect(Collectors.toList()) : "null") +
+                "]";
+    }
 
 	public int getId() {
 		return id;
@@ -64,24 +67,24 @@ public class Chat {
 		this.name = name;
 	}
 
-	public List<Message> getMesages() {
+	public List<MessageDAO> getMesages() {
 		return mesages;
 	}
 
-	public void setMesages(List<Message> mesages) {
+	public void setMesages(List<MessageDAO> mesages) {
 		this.mesages = mesages;
 	}
 
-	public List<User_Chat> getUsers() {
+	public List<User_ChatDAO> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User_Chat> users) {
+	public void setUsers(List<User_ChatDAO> users) {
 		this.users = users;
 	}
 
 
-	public Chat(int id, boolean isPublic, String name, List<Message> mesages, List<User_Chat> users) {
+	public ChatDAO(int id, boolean isPublic, String name, List<MessageDAO> mesages, List<User_ChatDAO> users) {
 		super();
 		this.id = id;
 		this.isPublic = isPublic;
@@ -90,7 +93,7 @@ public class Chat {
 		this.users = users;
 	}
 
-	public Chat() {
+	public ChatDAO() {
 		super();
 	}
 	

@@ -1,23 +1,20 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.chat.model.serviceModel;
 
-import jakarta.persistence.Column;
-
-public class User_ChatId {
+public class User_ChatIdServiceModel {
 	
-	@Column(name = "chat_Id")
 	private int chatId;
-	@Column(name = "user_Id")
 	private int userId;
+	
 	@Override
 	public String toString() {
 		return "User_ChatId [chatId=" + chatId + ", userId=" + userId + "]";
 	}
-	public User_ChatId(int chatId, int userId) {
+	public User_ChatIdServiceModel(int chatId, int userId) {
 		super();
 		this.chatId = chatId;
 		this.userId = userId;
 	}
-	public User_ChatId() {
+	public User_ChatIdServiceModel() {
 		super();
 	}
 	public int getChatId() {

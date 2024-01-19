@@ -1,6 +1,7 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.chat.model.DAO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class UserChat {
+public class UserChatDAO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -20,24 +21,32 @@ public class UserChat {
 	private String name;
 	
 	@OneToMany(mappedBy = "user")
-	private List<User_Chat> chats;
+	private List<User_ChatDAO> chats;
 
 	
 
 
-	@Override
-	public String toString() {
-		return "UserChat [id=" + id + ", name=" + name + ", chats=" + chats + "]";
-	}
+	 @Override
+	    public String toString() {
+	        return "UserChat [id=" + id + ", name=" + name +
+	                ", chats=" + (chats != null ? chats.stream().map(User_ChatDAO::getChat).map(ChatDAO::toString).collect(Collectors.toList()) : "null") +
+	                "]";
+	    }
 
-	public UserChat(int id, String name, List<User_Chat> chats) {
+	public UserChatDAO(int id, String name, List<User_ChatDAO> chats) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.chats = chats;
 	}
+	
+	public UserChatDAO(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
 
-	public UserChat() {
+	public UserChatDAO() {
 		super();
 	}
 
@@ -57,14 +66,14 @@ public class UserChat {
 		this.name = name;
 	}
 
-	public List<User_Chat> getChats() {
+	public List<User_ChatDAO> getChats() {
 		return chats;
 	}
 
-	public void setChats(List<User_Chat> chats) {
+	public void setChats(List<User_ChatDAO> chats) {
 		this.chats = chats;
 	}
-	
+
 
 
 	

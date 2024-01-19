@@ -1,8 +1,10 @@
-package com.example.reto2_chat_server.model;
+package com.example.reto2_chat_server.chat.model.DAO;
 
 import java.sql.Blob;
 import java.util.Arrays;
 import java.util.Date;
+
+import com.example.reto2_chat_server.model.DataType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +21,16 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "messages")
-public class Message {
+public class MessageDAO {
+	public ChatDAO getChat() {
+		return chat;
+	}
+
+
+
+	public void setChat(ChatDAO chat) {
+		this.chat = chat;
+	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;	
@@ -32,21 +43,21 @@ public class Message {
 	private Blob content;
 	@Column(name = "created_at")
 	private Date createdAt;
-	@Column
-	private int userId;
+	@Column(name = "user_id")
+	private int user_id;
 	@ManyToOne
     @JoinColumn(name = "chat_id")
-    private Chat chat;
+    private ChatDAO chat;
 	
 	
 	
-	public Message(int id, DataType dataType, Blob content, Date createdAt, int userId) {
+	public MessageDAO(int id, DataType dataType, Blob content, Date createdAt, int user_id) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
 		this.content = content;
 		this.createdAt = createdAt;
-		this.userId = userId;
+		this.user_id = user_id;
 	}
 
 
@@ -54,12 +65,12 @@ public class Message {
 	@Override
 	public String toString() {
 		return "Message [id=" + id + ", dataType=" + dataType + ", content=" + content + ", createdAt=" + createdAt
-				+ ", userId=" + userId + "]";
+				+ ", userId=" + user_id + "]";
 	}
 
 
 
-	public Message() {
+	public MessageDAO() {
 		super();
 	}
 	public int getId() {
@@ -86,11 +97,20 @@ public class Message {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-	public int getUserId() {
-		return userId;
+
+
+
+	public int getUser_id() {
+		return user_id;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
+
+
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
 	}
+
+
+	
 	
 }
