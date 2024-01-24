@@ -5,12 +5,14 @@ import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.MessageFromClient;
 import com.example.reto2_chat_server.model.message.MessageFromServer;
 import com.example.reto2_chat_server.model.message.MessageType;
+import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SocketIOConfig {
 	
-	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
 	@Value("${socket-server.host}")
 	private String host;
@@ -38,11 +41,11 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://10.5.7.28:8080");
+		config.setOrigin("http://10.5.7.13:8080");
 
 		server = new SocketIOServer(config);
 
-		server.addConnectListener(new MyConnectListener(server));
+		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil));
 		server.addDisconnectListener(new MyDisconnectListener());
 		server.addEventListener(SocketEvents.ON_MESSAGE_RECEIVED.value, MessageFromClient.class, onSendMessage());
 		server.start();
@@ -55,9 +58,11 @@ public class SocketIOConfig {
 	private static class MyConnectListener implements ConnectListener{
 
 		private SocketIOServer server;
+		private JwtTokenUtil jwtTokenUtil;
 
-		MyConnectListener(SocketIOServer server) {
+		MyConnectListener(SocketIOServer server, JwtTokenUtil jwtTokenUtil) {
 			this.server = server;
+			this.jwtTokenUtil = jwtTokenUtil;
 		}
 
 		@Override
@@ -80,17 +85,19 @@ public class SocketIOConfig {
 			try {
 				String authorization = headers.get(AUTHORIZATION_HEADER);
 				String jwt = authorization.split(" ")[1];
+				System.out.println(jwt);
 				// TODO FALTA VALIDAR EL TOKEN Y OBTENER LOS DATOS
-				Claims claims = Jwts.parser()
-			            .setSigningKey("APP_KEY") 
-			            .parseClaimsJws(jwt)
-			            .getBody();
+				if(jwtTokenUtil.validateAccessToken(jwt)) {					
+					Integer userId = jwtTokenUtil.getUserId(jwt);
+					String userEmail = jwtTokenUtil.getUserEmail(jwt);
+					client.set(CLIENT_USER_ID_PARAM,userId.toString() );
+					client.set(CLIENT_USER_NAME_PARAM, userEmail);
+					client.joinRoom("default-room");							
+				}
 				
-		        Integer userId = claims.get("id", Integer.class);
-		        String userEmail = claims.get("sub", String.class);
-				client.set(CLIENT_USER_ID_PARAM,userId.toString() );
-				client.set(CLIENT_USER_NAME_PARAM, userEmail);
-				client.joinRoom("default-room");
+				
+				
+				//TODO nombre  de grupos ("Group - numbre)
 				
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -160,9 +167,11 @@ public class SocketIOConfig {
 				System.out.printf(authorId.toString());
 				System.out.printf(authorName.toString());
 
+				//TODO guargar en base de datos
+				
 				server.getRoomOperations(data.getRoom()).sendEvent(SocketEvents.ON_SEND_MESSAGE.value, messageFromServer);
 
-
+				
 			}else {
 				//TODO falta manejar el no poder enviar el mensaje
 			}
