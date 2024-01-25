@@ -209,6 +209,7 @@ public class ChatServiveImpl implements ChatService{
 					//TODO poner la imagen bien
 					null,
 					messageDAO.getCreatedAt(),
+					messageDAO.getUpdatedAt(),
 					messageDAO.getUserId().convertFromDAOtoServiceResumedForMessages(messageDAO.getUserId()));
 
 
