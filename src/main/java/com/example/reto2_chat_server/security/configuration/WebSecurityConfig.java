@@ -52,7 +52,7 @@ public class WebSecurityConfig {
 				
 
 				
-				.anyRequest().authenticated()
+				.anyRequest().permitAll()
 				
 				).exceptionHandling((exceptionHandling) ->
 				

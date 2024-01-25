@@ -29,10 +29,9 @@ public class UserChatServiceModel {
 	                "]";
 	    }
 
-	public UserChatServiceModel(int id, String name) {
+	public UserChatServiceModel(int id) {
 		super();
 		this.id = id;
-		this.name = name;
 	}
 
 	public UserChatServiceModel() {
@@ -53,6 +52,12 @@ public class UserChatServiceModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public UserChatServiceModel(String name, String email) {
+		super();
+		this.name = name;
+		this.email = email;
 	}
 	
 
