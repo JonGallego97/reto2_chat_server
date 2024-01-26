@@ -1,5 +1,7 @@
 package com.example.reto2_chat_server.chat.repository;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 
 public class ForeignKeysFromChatsDAO {
@@ -31,6 +33,23 @@ public class ForeignKeysFromChatsDAO {
 		public String toString() {
 			return "ForeignKeysFromChatsDAO [chatId=" + chatId + ", userId=" + userId + "]";
 		}
+		@Override
+		public int hashCode() {
+			return Objects.hash(chatId, userId);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ForeignKeysFromChatsDAO other = (ForeignKeysFromChatsDAO) obj;
+			return chatId == other.chatId && userId == other.userId;
+		}
+		
+		
 	
 		
 		

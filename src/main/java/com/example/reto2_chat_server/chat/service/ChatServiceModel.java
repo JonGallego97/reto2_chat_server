@@ -1,13 +1,28 @@
 package com.example.reto2_chat_server.chat.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
+
+import jakarta.persistence.Column;
 
 public class ChatServiceModel {
 	private int id;
 	private boolean isPublic;
 	private String name;
+	private Date createdAt;
+	private Date updatedAt;
+	
+	
+	public ChatServiceModel(int id, boolean isPublic, String name, Date createdAt, Date updatedAt) {
+		super();
+		this.id = id;
+		this.isPublic = isPublic;
+		this.name = name;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 	private List<MessageServiceModel> listMessages;
     private List<UsersFromChatServiceModel> listUsers;
 	public ChatServiceModel(int id, boolean isPublic, String name, List<MessageServiceModel> listMessages,
@@ -19,6 +34,40 @@ public class ChatServiceModel {
 		this.listMessages = listMessages;
 		this.listUsers = listUsers;
 	}
+	public ChatServiceModel(int id) {
+		super();
+		this.id = id;
+	}
+	
+	
+	public ChatServiceModel(int id, boolean isPublic, String name) {
+		super();
+		this.id = id;
+		this.isPublic = isPublic;
+		this.name = name;
+	}
+
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+
 	public ChatServiceModel() {
 		super();
 	}

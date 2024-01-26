@@ -1,6 +1,7 @@
 package com.example.reto2_chat_server.model.message;
 
 public class MessageFromServer {
+	private int id;
 	private MessageType messageType;
 	private String message;
 	private String room;
@@ -40,9 +41,11 @@ public class MessageFromServer {
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
 	}
-	public MessageFromServer(MessageType messageType, String message, String room, DataType dataType, Integer authorId,
-			String authorName) {
+	
+	public MessageFromServer(int id, MessageType messageType, String message, String room, DataType dataType,
+			Integer authorId, String authorName) {
 		super();
+		this.id = id;
 		this.messageType = messageType;
 		this.message = message;
 		this.room = room;
@@ -50,6 +53,13 @@ public class MessageFromServer {
 		this.authorId = authorId;
 		this.authorName = authorName;
 	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	private DataType dataType;
 	private Integer authorId;
 	private String authorName;

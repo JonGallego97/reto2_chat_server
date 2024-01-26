@@ -53,7 +53,7 @@ public class SocketController {
 	public String sendMessage(
 			@RequestBody MessageFromServer message) {
 		//TODO modificar el constructor
-		MessageFromServer messageFromServer = new MessageFromServer(MessageType.CLIENT, message.getMessage(), "default-room",DataType.TEXT , 1, "ASD");
+		MessageFromServer messageFromServer = new MessageFromServer(0, MessageType.CLIENT, message.getMessage(), "default-room",DataType.TEXT , 1, "ASD");
 		socketIOServer.getBroadcastOperations().sendEvent(SocketEvents.ON_SEND_MESSAGE.value, messageFromServer);
 		return "enviado";
 	}

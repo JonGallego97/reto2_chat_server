@@ -31,11 +31,14 @@ public class Message {
 	
 	
 	
-	@Column(name = "content", columnDefinition="BLOB")
-	private Blob content;
+	@Column(name = "content")
+	private String content;
 	
 	@Column(name = "created_at")
 	private Date createdAt;
+	
+	@Column(name = "updated_at")
+	private Date updatedAt;
 
 	@ManyToOne
     @JoinColumn(name = "user_id")
@@ -58,14 +61,17 @@ public class Message {
 
 
 
-	public Message(int id, DataType dataType, Blob content, Date createdAt, UserDAO userId) {
+	public Message(int id, DataType dataType, String content, Date createdAt, Date updatedAt, UserDAO userId) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
 		this.content = content;
 		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.userId = userId;
+		this.chat = chat;
 	}
+
 
 
 
@@ -92,10 +98,10 @@ public class Message {
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
-	public Blob getContent() {
+	public String getContent() {
 		return content;
 	}
-	public void setContent(Blob content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	public Date getCreatedAt() {
@@ -110,5 +116,18 @@ public class Message {
 	public void setUserId(UserDAO userId) {
 		this.userId = userId;
 	}
+
+
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
 	
 }

@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "a05a5284-3fe1-4d79-bb8f-434368f72d2b",
+		"name": "Reto2_chat_Server",
+		"description": "Reto 2 chat server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30024146"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"admin@elorrieta-errekamari.com\",\r\n    \"password\": \"Admin\"\r\n}\r\n\r\n/*\r\n{\r\n    \"email\": \"admin@elorrieta-errekamari.com\",\r\n    \"password\": \"Admin\"\r\n}\r\n*/",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "10.5.7.28:8080/api/auth/login",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"28"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "me",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "10.5.7.28:8080/api/auth/me",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"28"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJHYWJyaWVsLlZpY2VudGVBbEBlbG9ycmlldGEtZXJyZWthbWFyaS5jb20iLCJpc3MiOiJBRFRfREFNIiwiZXhwIjoxNzA2MDI2NTIyLCJpZCI6MSwibmFtZSI6IkdhYnJpZWwiLCJlbWFpbCI6IkdhYnJpZWwuVmljZW50ZUFsQGVsb3JyaWV0YS1lcnJla2FtYXJpLmNvbSIsInN1cm5hbWUxIjoiVmljZW50ZSIsInN1cm5hbWUyIjoiQWxjYWxhIiwiYWRkcmVzcyI6IkNhbWnDsW8gSmF2aWVyLCAyLCDDgXRpY28gMcK6LCA1MzUwOSwgTXVuZ3XDrWEgZGUgU2FuIFBlZHJvIiwiRE5JIjoiNTcyMjIzODUiLCJwaG9uZU51bWJlcjEiOjI3Nzc5NzI2NywicGhvbmVOdW1iZXIyIjoxODUwMDY5NjQsImZpcnN0TG9naW4iOnRydWUsImxpc3RSb2xlcyI6W3siaWQiOjMsIm5hbWUiOiJBTFVNTk8ifV19.n_QYzbEtepC0WKs-D8l_q4sVfiagvxrt0Z0Uy7xodIP0m-eH1m5h7_i_tt9ujxE0JzYTkn0m_EZnGAPSa1RQXA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"message\": \"Mensaje de Prueba\",\r\n    \"dataType\": \"TEXT\",\r\n    \"room\": \"default-room\",\r\n    \"messageType\": \"CLIENT\",\r\n    \"authorId\": 1,\r\n    \"authorName\": \"Admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "10.5.7.28:8080/api/sockets/send-message",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"28"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"sockets",
+						"send-message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetChats",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "10.5.7.28:8080/api/chats",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"28"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateChat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"public\": true,\r\n    \"name\": \"Nombre del Chat\"\r\n\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "10.5.7.28:8080/api/chats",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"28"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteChat",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "10.5.7.38:8080/api/chats/20",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"38"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chats",
+						"20"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addUserToChat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n  \"userId\": 0,\r\n  \"chatId\": 29,\r\n  \"admin\": true\r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "10.5.7.38:8080/api/chats/29/add-users",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"38"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"chats",
+						"29",
+						"add-users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "removeUsersFromChat",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n  \"userId\": 1,\r\n  \"chatId\": 33,\r\n  \"admin\": true\r\n  \r\n},\r\n{\r\n  \"userId\": 2,\r\n  \"chatId\": 33,\r\n  \"admin\": false\r\n  \r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "10.5.7.38:8080/api//chats/331231/remove-users",
+					"host": [
+						"10",
+						"5",
+						"7",
+						"38"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"",
+						"chats",
+						"331231",
+						"remove-users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "chatId",
+			"value": "default-room",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

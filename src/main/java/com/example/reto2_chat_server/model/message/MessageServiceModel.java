@@ -11,23 +11,24 @@ public class MessageServiceModel {
 	private DataType dataType;
 	
 	
-	private Blob content;
+	private String content;
 	
 	private Date createdAt;
+	private Date updatedAt;
+
 
 	private UserServiceModel userId;
 
 	
-	public MessageServiceModel(int id, DataType dataType, Blob content, Date createdAt, UserServiceModel userId) {
+	public MessageServiceModel(int id, DataType dataType, String content, Date createdAt, UserServiceModel userId) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
 		this.content = content;
 		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.userId = userId;
 	}
-
-
 
 	public Date getCreatedAt() {
 		return createdAt;
@@ -35,6 +36,15 @@ public class MessageServiceModel {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public MessageServiceModel() {
@@ -53,10 +63,10 @@ public class MessageServiceModel {
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
-	public Blob getContent() {
+	public String getContent() {
 		return content;
 	}
-	public void setContent(Blob content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	public UserServiceModel getUserId() {
