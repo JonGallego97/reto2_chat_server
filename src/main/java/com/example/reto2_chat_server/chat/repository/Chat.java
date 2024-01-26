@@ -1,5 +1,6 @@
 package com.example.reto2_chat_server.chat.repository;
 
+import java.util.Date;
 import java.util.List;
 import com.example.reto2_chat_server.model.message.Message;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -25,14 +26,19 @@ public class Chat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(length = 60)
+	@Column(name = "is_Public")
 	private boolean isPublic;
 	@Column(length = 60)
 	private String name;
-	
 	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval =  true, fetch = FetchType.LAZY)
 	@JsonBackReference
 	private List<Message> messages;
+	
+	@Column(name = "created_at")
+	private Date createdat;
+	
+	@Column(name = "updated_at")
+	private Date updatedat;
 	
 	@OneToMany(mappedBy = "chat")
 	private List<UsersFromChatDAO> users;
@@ -94,6 +100,40 @@ public class Chat {
 	public String toString() {
 		return "Chat [id=" + id + ", isPublic=" + isPublic + ", name=" + name + ", messages=" + messages + ", users="
 				+ users + "]";
+	}
+
+	public Chat(boolean isPublic, String name) {
+		super();
+		this.isPublic = isPublic;
+		this.name = name;
+	}
+
+	public Chat(int id, boolean isPublic, String name, List<Message> messages, Date createdat, Date updatedat,
+			List<UsersFromChatDAO> users) {
+		super();
+		this.id = id;
+		this.isPublic = isPublic;
+		this.name = name;
+		this.messages = messages;
+		this.createdat = createdat;
+		this.updatedat = updatedat;
+		this.users = users;
+	}
+
+	public Date getCreatedat() {
+		return createdat;
+	}
+
+	public void setCreatedat(Date createdat) {
+		this.createdat = createdat;
+	}
+
+	public Date getUpdatedat() {
+		return updatedat;
+	}
+
+	public void setUpdatedat(Date updatedat) {
+		this.updatedat = updatedat;
 	}
 	
 

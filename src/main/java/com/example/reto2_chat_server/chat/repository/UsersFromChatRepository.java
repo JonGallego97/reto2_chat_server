@@ -7,4 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface UsersFromChatRepository  extends CrudRepository<UsersFromChatDAO, Integer> {
 
 	List<UsersFromChatDAO> findByUser_Id(Integer userId);
+
 }

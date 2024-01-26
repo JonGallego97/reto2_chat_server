@@ -8,10 +8,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "User_Chat")
 public class UsersFromChatDAO {
+	
 	@EmbeddedId
 	private ForeignKeysFromChatsDAO id;
 	
@@ -27,6 +30,43 @@ public class UsersFromChatDAO {
     @JoinColumn(name = "chat_id")
 	private Chat chat;
 	
+	@Column(name = "created_at")
+
+	private Date createdat;
+	
+	@Column(name = "updated_at")
+	private Date updatedat;
+
+	
+	
+	
+	public Date getCreatedat() {
+		return createdat;
+	}
+
+	public void setCreatedat(Date createdat) {
+		this.createdat = createdat;
+	}
+
+	public Date getUpdatedat() {
+		return updatedat;
+	}
+
+	public void setUpdatedat(Date updatedat) {
+		this.updatedat = updatedat;
+	}
+
+	public UsersFromChatDAO(ForeignKeysFromChatsDAO id, UserChatsDAO user, Chat chat, Date createdat, Date updatedat,
+			boolean isAdmin) {
+		super();
+		this.id = id;
+		this.user = user;
+		this.chat = chat;
+		this.createdat = createdat;
+		this.updatedat = updatedat;
+		this.isAdmin = isAdmin;
+	}
+
 	@Column
 	private boolean isAdmin;
 
@@ -77,6 +117,12 @@ public class UsersFromChatDAO {
 	@Override
 	public String toString() {
 		return "UsersFromChatDAO [id=" + id + ", user=" + user + ", chat=" + chat + ", isAdmin=" + isAdmin + "]";
+	}
+
+	public UsersFromChatDAO(ForeignKeysFromChatsDAO id, boolean isAdmin) {
+		super();
+		this.id = id;
+		this.isAdmin = isAdmin;
 	}
 
 	

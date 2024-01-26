@@ -36,6 +36,9 @@ public class Message {
 	
 	@Column(name = "created_at")
 	private Date createdAt;
+	
+	@Column(name = "updated_at")
+	private Date updatedAt;
 
 	@ManyToOne
     @JoinColumn(name = "user_id")
@@ -58,24 +61,18 @@ public class Message {
 
 
 
-	public Message(int id, DataType dataType, String content, Date createdAt, UserDAO userId) {
+	public Message(int id, DataType dataType, String content, Date createdAt, Date updatedAt, UserDAO userId) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
 		this.content = content;
 		this.createdAt = createdAt;
-		this.userId = userId;
-	}
-
-	public Message(int id, DataType dataType, String content, Date createdAt, UserDAO userId, Chat chat) {
-		super();
-		this.id = id;
-		this.dataType = dataType;
-		this.content = content;
-		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.userId = userId;
 		this.chat = chat;
 	}
+
+
 
 
 	@Override
@@ -119,5 +116,18 @@ public class Message {
 	public void setUserId(UserDAO userId) {
 		this.userId = userId;
 	}
+
+
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
 	
 }
