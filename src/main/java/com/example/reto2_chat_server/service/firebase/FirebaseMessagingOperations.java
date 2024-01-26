@@ -13,8 +13,9 @@ import com.google.firebase.messaging.Notification;
 @Service
 public class FirebaseMessagingOperations implements FirebaseMessagingOperationsService {
 	
-	private final FirebaseMessaging fcm;
 	@Autowired
+	private final FirebaseMessaging fcm;
+	
 	public FirebaseMessagingOperations(FirebaseMessaging fcm) {
     	this.fcm = fcm;
     }

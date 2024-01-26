@@ -20,7 +20,10 @@ public class MessageServiceModel {
 	private UserServiceModel userId;
 
 	
-	public MessageServiceModel(int id, DataType dataType, String content, Date createdAt, UserServiceModel userId) {
+	
+
+	public MessageServiceModel(int id, DataType dataType, String content, Date createdAt, Date updatedAt,
+			UserServiceModel userId) {
 		super();
 		this.id = id;
 		this.dataType = dataType;

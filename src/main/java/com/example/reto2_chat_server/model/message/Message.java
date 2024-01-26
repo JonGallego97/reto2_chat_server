@@ -61,7 +61,23 @@ public class Message {
 
 
 
-	public Message(int id, DataType dataType, String content, Date createdAt, Date updatedAt, UserDAO userId) {
+
+
+
+	public Message(int id, @NotNull DataType dataType, String content, Date createdAt, Date updatedAt, UserDAO userId) {
+		super();
+		this.id = id;
+		this.dataType = dataType;
+		this.content = content;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.userId = userId;
+	}
+
+
+
+	public Message(int id, @NotNull DataType dataType, String content, Date createdAt, Date updatedAt, UserDAO userId,
+			Chat chat) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
@@ -71,7 +87,6 @@ public class Message {
 		this.userId = userId;
 		this.chat = chat;
 	}
-
 
 
 

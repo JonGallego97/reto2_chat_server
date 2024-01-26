@@ -178,7 +178,7 @@ public class SocketIOConfig {
 				// Convert milliseconds to java.sql.Date
 				Date currentDate = new Date(currentTimeMillis);
 
-				MessageSend message = new MessageSend(0, DataType.TEXT, data.getMessage(), currentDate, userId,
+				MessageSend message = new MessageSend(0, DataType.TEXT, data.getMessage(), currentDate,currentDate, userId,
 						new ChatServiceModel(Integer.parseInt(
 								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
 				Message insertMessage = messageService.insertMessage(message);
