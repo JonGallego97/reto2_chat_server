@@ -39,9 +39,11 @@ public class ChatController {
 	@Autowired
 	JwtTokenUtil tokenUtil;
 
-	@GetMapping("/chats/{userId}")
-	public ResponseEntity<?> chats(@PathVariable ("userId") Integer id) {
-		List<ChatServiceModel> response = chatService.getChats(id);
+	@GetMapping("/chats")
+    public ResponseEntity<?> chats(Authentication authentication) {
+        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+        System.out.println(userDetails.getId());
+        List<ChatServiceModel> response = chatService.getChats(userDetails.getId());
 		//TODO ¿quitar el setlist del user?
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

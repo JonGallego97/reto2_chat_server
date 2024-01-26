@@ -11,12 +11,16 @@ public class MessageSend {
 	private DataType dataType;	
 	private String content;
 	private Date createdAt;
+	private Date updatedAt;
+
 	private UserServiceModel userId;
     private ChatServiceModel chat;
+
+    
 	@Override
 	public String toString() {
 		return "MessageSend [id=" + id + ", dataType=" + dataType + ", content=" + content + ", createdAt=" + createdAt
-				+ ", userId=" + userId + ", chat=" + chat + "]";
+				+ ", updatedAt=" + updatedAt + ", userId=" + userId + ", chat=" + chat + "]";
 	}
 	public int getId() {
 		return id;
@@ -54,12 +58,21 @@ public class MessageSend {
 	public void setChat(ChatServiceModel chat) {
 		this.chat = chat;
 	}
-	public MessageSend(int id, DataType dataType, String content, Date createdAt, UserServiceModel userId, ChatServiceModel chat) {
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	public MessageSend(int id, DataType dataType, String content, Date createdAt, Date updatedAt,
+			UserServiceModel userId, ChatServiceModel chat) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
 		this.content = content;
 		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.userId = userId;
 		this.chat = chat;
 	}
@@ -67,5 +80,6 @@ public class MessageSend {
 		super();
 	}
     
+	
     
 }

@@ -22,6 +22,7 @@ public class MessageServiceImp implements MessageService{
 				message.getDataType(),
 				message.getContent(),
 				message.getCreatedAt(),
+				message.getUpdatedAt(),
 				convertUser(message.getUserId()),
 				convertChat(message.getChat())
 			);

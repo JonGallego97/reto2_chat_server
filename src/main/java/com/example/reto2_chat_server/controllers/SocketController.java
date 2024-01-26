@@ -28,7 +28,7 @@ public class SocketController {
 	 @Autowired
 	 private FirebaseMessagingOperationsService firebaseMessagingOperationsService;
 	 
-	@Autowired
+	
 	public SocketController(SocketIOServer socketIOServer) {
 		this.socketIOServer = socketIOServer;
 		

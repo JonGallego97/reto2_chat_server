@@ -108,7 +108,7 @@ public class ChatServiveImpl implements ChatService{
 	            	ForeignKeysFromChatsDAO foreignKeysFromChatsDAO = new ForeignKeysFromChatsDAO(userFromChat.getChatId(), userFromChat.getUserId());
 	            	UsersFromChatDAO usersFromChatDAO = new UsersFromChatDAO(foreignKeysFromChatsDAO, userFromChat.isAdmin());
 	            	
-	            	UserChatsDAO userChatsDAO = userChatRepository.findById(foreignKeysFromChatsDAO.getUserId())
+	            	UserChatsDAO userChatsDAO = userRepository.findById(foreignKeysFromChatsDAO.getUserId())
 	            	        .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + foreignKeysFromChatsDAO.getUserId()));
 	    
 	            	usersFromChatDAO.setUser(userChatsDAO);
@@ -187,7 +187,7 @@ public class ChatServiveImpl implements ChatService{
 	public List<Integer> getChatIds(int id) {
 		List<Integer> response = new ArrayList<>();
 
-		Optional<UserChatsDAO> userChats = userChatRepository.findById(id);
+		Optional<UserChatsDAO> userChats = userRepository.findById(id);
 
 		if (userChats.isPresent()) {
 			List<UsersFromChatDAO> userChatsList = userChats.get().getChats();
