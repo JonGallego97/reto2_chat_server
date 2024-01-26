@@ -1,7 +1,10 @@
 package com.example.reto2_chat_server.controllers;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,16 +18,36 @@ import com.example.reto2_chat_server.config.socketio.SocketIOConfig;
 import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.MessageFromServer;
 import com.example.reto2_chat_server.model.message.MessageType;
+import com.example.reto2_chat_server.service.firebase.FirebaseMessagingOperationsService;
 
 @RestController
 @RequestMapping("/api/sockets")
 public class SocketController {
 	private final SocketIOServer socketIOServer;
 
+	 @Autowired
+	 private FirebaseMessagingOperationsService firebaseMessagingOperationsService;
+	 
 	@Autowired
 	public SocketController(SocketIOServer socketIOServer) {
 		this.socketIOServer = socketIOServer;
+		
+		
 	}
+	
+    @GetMapping("/send-firebase-message")
+    public String sendFirebaseMessage() {
+        // Envia un mensaje a todos los clientes conectados
+    	
+    	String deviceToken = "cjJYg4YSTl6ZPwyOEYIbpw:APA91bGBesFO8L8LNT3MxZoMGV7u-_2eg2OlFO6A3HoSYZnJeuPNbMNkvuNwfzey1xtkr_KrGOXEC_k3DLbLUzL4Z7FpOZZGLhBIweYv9_oRHjW_4AVGFte8uhDnAq1LJv-JcpJR3jtN";
+    	List<String> deviceTokens = new ArrayList<String>();
+    	deviceTokens.add(deviceToken);
+    	//firebaseMessagingOperations.sendMulticastNotification(fcm, deviceTokens);
+    	firebaseMessagingOperationsService.sendMulticastNotification(deviceTokens);
+    	
+        return "Mensaje enviado";
+    }
+    
 	
 	@PostMapping("/send-message")
 	public String sendMessage(
