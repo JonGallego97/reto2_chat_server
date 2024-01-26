@@ -33,35 +33,44 @@ public class ChatServiveImpl implements ChatService{
 	private ChatRepository chatRepository;
 
 	@Autowired
-	private UserChatRepository userChatRepository;
-
-	@Autowired 
+	private UserChatRepository userRepository;
+	
+	@Autowired
 	private UsersFromChatRepository usersFromChatRepository;
-
-
-
+	
+	@Override
+	public List<Integer> getChatsIdsByUserId(Integer userId) {
+		// TODO Auto-generated method stub
+		List<UsersFromChatDAO> findByUser_Id = usersFromChatRepository.findByUser_Id(userId);
+		List<Integer> result = new ArrayList<Integer>();
+		
+		for (UsersFromChatDAO usersFromChatDAO : findByUser_Id) {
+			result.add(usersFromChatDAO.getChat().getId());
+		}
+		return result;
+		
+	}
+	
 	@Override
 	public List<ChatServiceModel> getChats(int id) {
+		
+	    List<ChatServiceModel> response = new ArrayList<>();
+	    List<Chat> chatList = new ArrayList<>();
 
+	    Optional<UserChatsDAO> userChats = userRepository.findById(id);
 
-		List<ChatServiceModel> response = new ArrayList<>();
-		List<Chat> chatList = new ArrayList<>();
-
-		Optional<UserChatsDAO> userChats = userChatRepository.findById(id);
-
-		if (userChats.isPresent()) {
-			List<UsersFromChatDAO> userChatsList = userChats.get().getChats();
-			List<Integer> chatIds = userChatsList.stream()
-					.map(userChat -> userChat.getChat().getId())
-					.collect(Collectors.toList());
-			chatList = (List<Chat>) chatRepository.findAllById(chatIds);
-			for (Chat chatDAO : chatList) {
-				response.add(deDAOaService(chatDAO));
+	    if (userChats.isPresent()) {
+	        List<UsersFromChatDAO> userChatsList = userChats.get().getChats();
+	        List<Integer> chatIds = userChatsList.stream()
+	                .map(userChat -> userChat.getChat().getId())
+	                .collect(Collectors.toList());
+	        chatList = (List<Chat>) chatRepository.findAllById(chatIds);
+	        for (Chat chatDAO : chatList) {
+	        	response.add(deDAOaService(chatDAO));
 			}
-
-		}
-
-		return response;
+	        
+	    }
+	    return response;
 	}
 	@Override
 	public ChatServiceModel createChat(Chat chat) {
@@ -206,8 +215,7 @@ public class ChatServiveImpl implements ChatService{
 			MessageServiceModel messageService = new MessageServiceModel(
 					messageDAO.getId(),
 					messageDAO.getDataType(),
-					//TODO poner la imagen bien
-					null,
+					messageDAO.getContent(),
 					messageDAO.getCreatedAt(),
 					messageDAO.getUpdatedAt(),
 					messageDAO.getUserId().convertFromDAOtoServiceResumedForMessages(messageDAO.getUserId()));
@@ -249,12 +257,4 @@ public class ChatServiveImpl implements ChatService{
 				);		
 		return idService;
 	}
-
-
-	
-
-
-
-
-
 }

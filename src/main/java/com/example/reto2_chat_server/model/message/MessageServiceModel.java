@@ -11,7 +11,7 @@ public class MessageServiceModel {
 	private DataType dataType;
 	
 	
-	private Blob content;
+	private String content;
 	
 	private Date createdAt;
 	private Date updatedAt;
@@ -20,11 +20,7 @@ public class MessageServiceModel {
 	private UserServiceModel userId;
 
 	
-	
-
-
-	public MessageServiceModel(int id, DataType dataType, Blob content, Date createdAt, Date updatedAt,
-			UserServiceModel userId) {
+	public MessageServiceModel(int id, DataType dataType, String content, Date createdAt, UserServiceModel userId) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
@@ -67,10 +63,10 @@ public class MessageServiceModel {
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
-	public Blob getContent() {
+	public String getContent() {
 		return content;
 	}
-	public void setContent(Blob content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	public UserServiceModel getUserId() {

@@ -14,6 +14,7 @@ import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
 public interface ChatService {
 
 	List<ChatServiceModel> getChats(int id);
+	List<Integer> getChatsIdsByUserId(Integer userId);
 	ChatServiceModel createChat(Chat chat);
 	ResponseEntity<?> deleteChatById(Integer id);
 	ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd);

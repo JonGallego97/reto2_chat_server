@@ -18,6 +18,11 @@ import jakarta.persistence.Table;
 @Table(name = "chats")
 public class Chat {
 
+	public Chat(int id) {
+		super();
+		this.id = id;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

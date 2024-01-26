@@ -31,6 +31,11 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="users")
 public class UserDAO implements UserDetails {
+	public UserDAO(Integer id) {
+		super();
+		this.id = id;
+	}
+
 	/**
 	 * 
 	 */
