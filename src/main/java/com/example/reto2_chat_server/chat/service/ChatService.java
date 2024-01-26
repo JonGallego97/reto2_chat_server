@@ -6,4 +6,6 @@ import java.util.List;
 public interface ChatService {
 
 	List<ChatServiceModel> getChats(int id);
+
+	List<Integer> getChatsIdsByUserId(Integer userId);
 }

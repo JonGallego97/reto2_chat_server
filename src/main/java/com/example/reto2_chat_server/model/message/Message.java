@@ -31,8 +31,8 @@ public class Message {
 	
 	
 	
-	@Column(name = "content", columnDefinition="BLOB")
-	private Blob content;
+	@Column(name = "content")
+	private String content;
 	
 	@Column(name = "created_at")
 	private Date createdAt;
@@ -58,7 +58,7 @@ public class Message {
 
 
 
-	public Message(int id, DataType dataType, Blob content, Date createdAt, UserDAO userId) {
+	public Message(int id, DataType dataType, String content, Date createdAt, UserDAO userId) {
 		super();
 		this.id = id;
 		this.dataType = dataType;
@@ -67,6 +67,15 @@ public class Message {
 		this.userId = userId;
 	}
 
+	public Message(int id, DataType dataType, String content, Date createdAt, UserDAO userId, Chat chat) {
+		super();
+		this.id = id;
+		this.dataType = dataType;
+		this.content = content;
+		this.createdAt = createdAt;
+		this.userId = userId;
+		this.chat = chat;
+	}
 
 
 	@Override
@@ -92,10 +101,10 @@ public class Message {
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
-	public Blob getContent() {
+	public String getContent() {
 		return content;
 	}
-	public void setContent(Blob content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	public Date getCreatedAt() {

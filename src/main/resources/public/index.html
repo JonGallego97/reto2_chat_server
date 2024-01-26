@@ -27,17 +27,17 @@
     <div id="messages"></div>
 
     <form id="form" action="">
-        <input id="room" name="room" autocomplete="off" placeholder="Room..." value="default-room"/>
+        <input id="room" name="room" autocomplete="off" placeholder="Room..." value="Group- 2"/>
         <input id="message" name="message" autocomplete="off" /><button type="submit">Enviar</button>
     </form>
 
     <script>
         // Conexion al servidor Socket.IO
-        const socket = io('http://10.5.7.28:8085',
+        const socket = io('http://10.5.7.37:8085',
             {
                 withCredentials: true,
                 extraHeaders: {
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBlbG9ycmlldGEtZXJyZWthbWFyaS5jb20iLCJpc3MiOiJBRFRfREFNIiwiZXhwIjoxNzA1NjA3NzY5LCJpZCI6MCwibmFtZSI6IkFkbWluIiwic3VybmFtZTEiOiJBZG1pbiIsInN1cm5hbWUyIjoiQWRtaW4iLCJhZGRyZXNzIjoiRGlyZWNjacOzbiIsIkROSSI6IjEyMzQ1Njc4QSIsInBob25lTnVtYmVyMSI6MTIzNDU2Nzg5LCJwaG9uZU51bWJlcjIiOjk4NzY1NDMyMSwiZmlyc3RMb2dpbiI6ZmFsc2UsImxpc3RSb2xlcyI6W3siaWQiOjEsIm5hbWUiOiJBRE1JTklTVFJBRE9SIn1dfQ.XJiOmymjhpZscIXfZK6LV5TER5CvpzGlMYlsM2Tl-nfOSQVa6btjVwHO3a4ijs4r-UbFEJLA97OWWvzVwQDW4Q'
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXJpYS5zYWF2ZWRyYXBvQGVsb3JyaWV0YS1lcnJla2FtYXJpLmNvbSIsImlzcyI6IkFEVF9EQU0iLCJleHAiOjE3MDYzNjUyNDcsImlkIjo0LCJuYW1lIjoiTWFyaWEiLCJlbWFpbCI6Im1hcmlhLnNhYXZlZHJhcG9AZWxvcnJpZXRhLWVycmVrYW1hcmkuY29tIiwic3VybmFtZTEiOiJTYWF2ZWRyYSIsInN1cm5hbWUyIjoiUG9uY2UiLCJhZGRyZXNzIjoiUGFzc2VpZyBNYXLDrWEsIDUzNywgMMK6IDTCuiwgMDQwMzIsIE9zb3JpbyBkZSBVbGxhIiwiRE5JIjoiNjI1ODQ2NTlBIiwicGhvbmVOdW1iZXIxIjoyOTU2OTk3ODgsInBob25lTnVtYmVyMiI6MzM0NDIzMTkzLCJmaXJzdExvZ2luIjpmYWxzZSwibGlzdFJvbGVzIjpbeyJpZCI6MywibmFtZSI6IkFMVU1OTyJ9XX0.VS1DuRKd3zpdrK-KjWBmGdeCIh9F0emREDyIY0tne_jgajXJf_BxZSCfAQjFFMekIqVzXanyQetPXqod6YUmPg'
                 }
             }
         ); 

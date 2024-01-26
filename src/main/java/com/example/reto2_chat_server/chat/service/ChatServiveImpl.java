@@ -14,6 +14,7 @@ import com.example.reto2_chat_server.chat.repository.ForeignKeysFromChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserChatRepository;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
+import com.example.reto2_chat_server.chat.repository.UsersFromChatRepository;
 import com.example.reto2_chat_server.model.message.Message;
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
 
@@ -25,9 +26,24 @@ public class ChatServiveImpl implements ChatService{
 	@Autowired
 	private UserChatRepository userRepository;
 	
+	@Autowired
+	private UsersFromChatRepository usersFromChatRepository;
+	
+	@Override
+	public List<Integer> getChatsIdsByUserId(Integer userId) {
+		// TODO Auto-generated method stub
+		List<UsersFromChatDAO> findByUser_Id = usersFromChatRepository.findByUser_Id(userId);
+		List<Integer> result = new ArrayList<Integer>();
+		
+		for (UsersFromChatDAO usersFromChatDAO : findByUser_Id) {
+			result.add(usersFromChatDAO.getChat().getId());
+		}
+		return result;
+		
+	}
+	
 	@Override
 	public List<ChatServiceModel> getChats(int id) {
-		
 		
 	    List<ChatServiceModel> response = new ArrayList<>();
 	    List<Chat> chatList = new ArrayList<>();
@@ -45,7 +61,6 @@ public class ChatServiveImpl implements ChatService{
 			}
 	        
 	    }
-
 	    return response;
 	}
 
@@ -81,8 +96,7 @@ public class ChatServiveImpl implements ChatService{
 			MessageServiceModel messageService = new MessageServiceModel(
 					messageDAO.getId(),
 					messageDAO.getDataType(),
-					//TODO poner la imagen bien
-					null,
+					messageDAO.getContent(),
 					messageDAO.getCreatedAt(),
 					messageDAO.getUserId().convertFromDAOtoServiceResumedForMessages(messageDAO.getUserId()));
 				
@@ -123,6 +137,9 @@ public class ChatServiveImpl implements ChatService{
 			);		
 		return idService;
 	}
+
+
+	
 	
 	
 }

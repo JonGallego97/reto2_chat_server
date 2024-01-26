@@ -19,6 +19,10 @@ public class ChatServiceModel {
 		this.listMessages = listMessages;
 		this.listUsers = listUsers;
 	}
+	public ChatServiceModel(int id) {
+		super();
+		this.id = id;
+	}
 	public ChatServiceModel() {
 		super();
 	}
