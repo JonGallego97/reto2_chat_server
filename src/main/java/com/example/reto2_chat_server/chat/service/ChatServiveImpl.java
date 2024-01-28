@@ -204,6 +204,8 @@ public class ChatServiveImpl implements ChatService{
 				chatDAO.getId(),
 				chatDAO.isPublic(),
 				chatDAO.getName(),
+				chatDAO.getCreatedat(),
+				chatDAO.getUpdatedat(),
 				deDAOaServiceMessages(chatDAO.getMessages()),
 				deDAOaServiceUsers(chatDAO.getUsers())				
 				);
