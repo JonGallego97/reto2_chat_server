@@ -39,7 +39,7 @@ public class SocketController {
     public String sendFirebaseMessage() {
         // Envia un mensaje a todos los clientes conectados
     	
-    	String deviceToken = "cjJYg4YSTl6ZPwyOEYIbpw:APA91bGBesFO8L8LNT3MxZoMGV7u-_2eg2OlFO6A3HoSYZnJeuPNbMNkvuNwfzey1xtkr_KrGOXEC_k3DLbLUzL4Z7FpOZZGLhBIweYv9_oRHjW_4AVGFte8uhDnAq1LJv-JcpJR3jtN";
+    	String deviceToken = "c8KScdYeTZSfx7k4uoDlRy:APA91bHkQEZBtMVjmqMfYy1e4dA6RAtpfioEQJDo8XtD-5KskbfyRDtrSDNPLjfzwWyNh1OMXmnryOfkayJyBPK_oMeh0X-B5wsaKoteBs6vArRD1f_p3khkv-D9T30-8NmL2rjUxu_v";
     	List<String> deviceTokens = new ArrayList<String>();
     	deviceTokens.add(deviceToken);
     	//firebaseMessagingOperations.sendMulticastNotification(fcm, deviceTokens);
