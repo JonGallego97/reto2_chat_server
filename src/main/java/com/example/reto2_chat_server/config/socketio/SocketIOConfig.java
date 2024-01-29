@@ -59,7 +59,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://10.5.7.59:8080");
+		config.setOrigin("http://10.5.7.80:8080");
 
 		server = new SocketIOServer(config);
 
