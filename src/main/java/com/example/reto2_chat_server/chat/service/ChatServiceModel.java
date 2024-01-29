@@ -1,5 +1,6 @@
 package com.example.reto2_chat_server.chat.service;
 
+
 import java.util.Date;
 import java.util.List;
 
@@ -25,12 +26,14 @@ public class ChatServiceModel {
 	}
 	private List<MessageServiceModel> listMessages;
     private List<UsersFromChatServiceModel> listUsers;
-	public ChatServiceModel(int id, boolean isPublic, String name, List<MessageServiceModel> listMessages,
+	public ChatServiceModel(int id, boolean isPublic, String name, Date createdAt, Date updatedAt, List<MessageServiceModel> listMessages,
 			List<UsersFromChatServiceModel> listUsers) {
 		super();
 		this.id = id;
 		this.isPublic = isPublic;
 		this.name = name;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.listMessages = listMessages;
 		this.listUsers = listUsers;
 	}
