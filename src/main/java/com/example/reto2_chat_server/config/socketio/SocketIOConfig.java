@@ -9,6 +9,7 @@ import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.Message;
 import com.example.reto2_chat_server.model.message.MessageFromClient;
 import com.example.reto2_chat_server.model.message.MessageFromServer;
+import com.example.reto2_chat_server.model.message.MessagePostRequestToSender;
 import com.example.reto2_chat_server.model.message.MessageSend;
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
 import com.example.reto2_chat_server.model.message.MessageType;
@@ -186,8 +187,13 @@ public class SocketIOConfig {
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
 						data.getRoom(), DataType.TEXT, authorId, authorName);
 
-				server.getRoomOperations(data.getRoom()).sendEvent(SocketEvents.ON_SEND_MESSAGE.value,
-						messageFromServer);
+				MessagePostRequestToSender responseTosender = new MessagePostRequestToSender(insertMessage.getId(), data.getIdRoom());
+				
+				senderClient.sendEvent(SocketEvents.ON_SEND_ID_MESSAGE.value, responseTosender);
+				
+				
+				server.getRoomOperations(data.getRoom()).sendEvent(SocketEvents.ON_SEND_MESSAGE.value, senderClient, messageFromServer);
+				
 
 			} else {
 				// TODO falta manejar el no poder enviar el mensaje
