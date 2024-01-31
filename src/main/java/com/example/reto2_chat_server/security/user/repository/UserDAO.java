@@ -61,10 +61,11 @@ public class UserDAO implements UserDetails {
 	private Integer phoneNumber1;
 	@Column(name="phoneNumber2")
 	private Integer phoneNumber2;
-	@Column(name="image")
 	@JsonIgnore
-	private Blob image;
-	@Column(name="dual")
+	@Column(name="image")
+	private String image;
+	@JsonIgnore
+	@Column(name="is_dual")
 	private Boolean dual;
 	@Column(name="firstLogin")
 	private Boolean firstLogin;
@@ -79,16 +80,16 @@ public class UserDAO implements UserDetails {
 			)
 	@JsonIgnore
 	private List<Role> listRoles;
-	
+
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
 	private DepartmentDAO department;
-	
+
 
 
 	public UserDAO(Integer id, String email, String password, String name, String surname1, String surname2, String dNI,
-			String address, Integer phoneNumber1, Integer phoneNumber2, Blob image, Boolean dual, Boolean firstLogin,
+			String address, Integer phoneNumber1, Integer phoneNumber2, String image, Boolean dual, Boolean firstLogin,
 			List<Role> listRoles, DepartmentDAO department) {
 		super();
 		this.id = id;
@@ -204,15 +205,15 @@ public class UserDAO implements UserDetails {
 		this.phoneNumber2 = phoneNumber2;
 	}
 
-	public Blob getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(Blob image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 
-	public Boolean getDual() {
+	public Boolean isDual() {
 		return dual;
 	}
 
@@ -285,10 +286,32 @@ public class UserDAO implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
-	
-public UserServiceModel convertFromDAOtoService(UserDAO userDAO) {
 
-		
+
+
+
+
+	public UserDAO(Integer id, String email, String password, String name, String surname1, String surname2, String dNI,
+			Integer phoneNumber1, Integer phoneNumber2, String image, Boolean firstLogin) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.surname1 = surname1;
+		this.surname2 = surname2;
+		DNI = dNI;
+		this.phoneNumber1 = phoneNumber1;
+		this.phoneNumber2 = phoneNumber2;
+		this.image = image;
+		this.firstLogin = firstLogin;
+	}
+
+
+
+	public UserServiceModel convertFromDAOtoService(UserDAO userDAO) {
+
+
 		List <RoleServiceModel> listRoles = new ArrayList<RoleServiceModel>();
 
 		UserServiceModel response = new UserServiceModel(
@@ -301,9 +324,9 @@ public UserServiceModel convertFromDAOtoService(UserDAO userDAO) {
 				userDAO.getAddress(),
 				userDAO.getPhoneNumber1(),
 				userDAO.getPhoneNumber2(),
-				userDAO.getDual(),
-				userDAO.getFirstLogin());
-		System.out.println(userDAO.getEmail());
+				userDAO.isDual(),
+				userDAO.getFirstLogin(),
+				userDAO.getImage());
 
 		try {
 			for(Role role : userDAO.getListRoles()) {
@@ -331,20 +354,51 @@ public UserServiceModel convertFromDAOtoService(UserDAO userDAO) {
 
 	}
 
-public UserServiceModel convertFromDAOtoServiceResumedForMessages(UserDAO userDAO) {
+	public UserServiceModel convertFromDAOtoServiceResumedForMessages(UserDAO userDAO) {
 
-	UserServiceModel response = new UserServiceModel(
-			userDAO.getId(),
-			userDAO.getEmail(),
-			userDAO.getName(),
-			userDAO.getSurname1(),
-			userDAO.getSurname2(),
-			userDAO.getPhoneNumber1());
-	return response;
-		
-
+		UserServiceModel response = new UserServiceModel(
+				userDAO.getId(),
+				userDAO.getEmail(),
+				userDAO.getName(),
+				userDAO.getSurname1(),
+				userDAO.getSurname2(),
+				userDAO.getPhoneNumber1());
+		return response;
 
 
-}
+
+
+	}
+
+
+
+	public UserDAO(Integer id, String email, String password, String name, String surname1, String surname2, String dNI,
+			String address, Integer phoneNumber1, Integer phoneNumber2, String image, Boolean dual,
+			Boolean firstLogin) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.surname1 = surname1;
+		this.surname2 = surname2;
+		DNI = dNI;
+		this.address = address;
+		this.phoneNumber1 = phoneNumber1;
+		this.phoneNumber2 = phoneNumber2;
+		this.image = image;
+		this.dual = dual;
+		this.firstLogin = firstLogin;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "UserDAO [id=" + id + ", email=" + email + ", password=" + password + ", name=" + name + ", surname1="
+				+ surname1 + ", surname2=" + surname2 + ", DNI=" + DNI + ", address=" + address + ", phoneNumber1="
+				+ phoneNumber1 + ", phoneNumber2=" + phoneNumber2 + ", image=" + image + ", dual=" + dual + ", firstLogin="
+				+ firstLogin + ", listRoles=" + listRoles + ", department=" + department + "]";
+	}
 
 }

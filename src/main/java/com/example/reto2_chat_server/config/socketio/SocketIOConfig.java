@@ -11,13 +11,10 @@ import com.example.reto2_chat_server.model.message.MessageFromClient;
 import com.example.reto2_chat_server.model.message.MessageFromServer;
 import com.example.reto2_chat_server.model.message.MessagePostRequestToSender;
 import com.example.reto2_chat_server.model.message.MessageSend;
-import com.example.reto2_chat_server.model.message.MessageServiceModel;
 import com.example.reto2_chat_server.model.message.MessageType;
 import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
 
@@ -27,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.SQLException;
-import javax.sql.rowset.serial.SerialBlob;
 
 @Configuration
 public class SocketIOConfig {
@@ -60,7 +54,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://192.168.1.153:8080");
+		config.setOrigin("http://10.5.7.16:8080");
 
 		server = new SocketIOServer(config);
 

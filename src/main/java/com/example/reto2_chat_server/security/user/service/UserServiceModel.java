@@ -19,6 +19,7 @@ public class UserServiceModel implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
     private String email;
+	private String password;
     private String name;
     private String surname1;
     private String surname2;
@@ -28,6 +29,7 @@ public class UserServiceModel implements UserDetails {
     private Integer phoneNumber2;
     private Boolean dual;
     private Boolean firstLogin;
+    private String image;
     private List<RoleServiceModel> roles;
     private DepartmentServiceModel department;
     
@@ -48,6 +50,16 @@ public UserServiceModel(Integer id, String email, String name, String surname1, 
 		this.surname1 = surname1;
 		this.surname2 = surname2;
 	}
+
+
+@Override
+public String toString() {
+	return "UserServiceModel [id=" + id + ", email=" + email + ", password=" + password + ", name=" + name
+			+ ", surname1=" + surname1 + ", surname2=" + surname2 + ", DNI=" + DNI + ", address=" + address
+			+ ", phoneNumber1=" + phoneNumber1 + ", phoneNumber2=" + phoneNumber2 + ", dual=" + dual + ", firstLogin="
+			+ firstLogin + ", image=" + image + ", roles=" + roles + ", department=" + department + ", listChats="
+			+ listChats + "]";
+}
 
 
 public void setListChats(List<ChatServiceModel> listChats) {
@@ -96,11 +108,23 @@ public void setListChats(List<ChatServiceModel> listChats) {
 	}
 	
 	
-	public UserServiceModel(Integer id, String email, String name, String surname1, String surname2, String dNI,
-			String address, Integer phoneNumber1, Integer phoneNumber2, Boolean dual, Boolean firstLogin) {
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+
+
+	
+
+
+	public UserServiceModel(Integer id, String email, String password, String name, String surname1, String surname2,
+			String dNI, String address, Integer phoneNumber1, Integer phoneNumber2, Boolean dual, Boolean firstLogin,
+			String image) {
 		super();
 		this.id = id;
 		this.email = email;
+		this.password = password;
 		this.name = name;
 		this.surname1 = surname1;
 		this.surname2 = surname2;
@@ -110,6 +134,24 @@ public void setListChats(List<ChatServiceModel> listChats) {
 		this.phoneNumber2 = phoneNumber2;
 		this.dual = dual;
 		this.firstLogin = firstLogin;
+		this.image = image;
+	}
+
+
+	public UserServiceModel(Integer id, String email, String password, String name, String surname1, String surname2,
+			String dNI, Integer phoneNumber1, Integer phoneNumber2, Boolean firstLogin, String image) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.surname1 = surname1;
+		this.surname2 = surname2;
+		DNI = dNI;
+		this.phoneNumber1 = phoneNumber1;
+		this.phoneNumber2 = phoneNumber2;
+		this.firstLogin = firstLogin;
+		this.image = image;
 	}
 
 
@@ -208,6 +250,36 @@ public void setListChats(List<ChatServiceModel> listChats) {
 	}
 	public void setDepartment(DepartmentServiceModel department) {
 		this.department = department;
+	}
+
+
+
+	public UserServiceModel(Integer id, String email, String name, String surname1, String surname2, String dNI,
+			String address, Integer phoneNumber1, Integer phoneNumber2, Boolean dual, Boolean firstLogin,
+			String image) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.surname1 = surname1;
+		this.surname2 = surname2;
+		DNI = dNI;
+		this.address = address;
+		this.phoneNumber1 = phoneNumber1;
+		this.phoneNumber2 = phoneNumber2;
+		this.dual = dual;
+		this.firstLogin = firstLogin;
+		this.image = image;
+	}
+
+
+	public String getImage() {
+		return image;
+	}
+
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 

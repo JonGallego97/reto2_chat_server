@@ -10,16 +10,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.reto2_chat_server.department.service.DepartmentServiceModel;
 import com.example.reto2_chat_server.model.Role;
 import com.example.reto2_chat_server.model.RoleServiceModel;
 import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.repository.UserDAO;
+import com.example.reto2_chat_server.security.user.service.UserService;
+import com.example.reto2_chat_server.security.user.service.UserServiceImpl;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
 import jakarta.validation.Valid;
@@ -29,6 +36,9 @@ import jakarta.validation.Valid;
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	UserServiceImpl userService;
 
 	@Autowired
 	JwtTokenUtil tokenUtil;
@@ -36,6 +46,8 @@ public class AuthController {
 	@PostMapping("auth/login")
 	public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
 		try {
+
+			
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
 					);
@@ -47,10 +59,30 @@ public class AuthController {
 			return ResponseEntity.ok().body(response);
 		} catch (BadCredentialsException ex) {
 			// TODO: handle exception
+			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
 
+	}
+	
+	@PutMapping("auth/register")
+	public ResponseEntity<?> register(Authentication authentication, @RequestBody AuthPutModel request){
+		UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+		request.setNewPassword(encodedPassword);
+		request.setFirstLogin(false);
+		request.setDual(userDetails.getDual());
+		request.setAddress(userDetails.getAddress());
+
+
+		UserServiceModel response = userService.updateUserFirstLogin(request);
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
+
+		
 	}
 
 	@GetMapping("/auth/me")
@@ -59,6 +91,8 @@ public class AuthController {
 			return ResponseEntity.ok().body(userDetails);
 		
 	}
+	
+
 
 	public UserServiceModel convertFromDAOtoService(UserDAO userDAO) {
 
@@ -75,9 +109,9 @@ public class AuthController {
 				userDAO.getAddress(),
 				userDAO.getPhoneNumber1(),
 				userDAO.getPhoneNumber2(),
-				userDAO.getDual(),
-				userDAO.getFirstLogin());
-		System.out.println(userDAO.getEmail());
+				userDAO.isDual(),
+				userDAO.getFirstLogin(),
+				userDAO.getImage());
 
 		try {
 			for(Role role : userDAO.getListRoles()) {
