@@ -47,7 +47,7 @@ public class JwtTokenUtil {
 				.claim("phoneNumber1", userServiceModel.getPhoneNumber1())
 				.claim("phoneNumber2", userServiceModel.getPhoneNumber2())
 				//.claim("image", userDAO.getImage())
-				.claim("dual", userServiceModel.getDual())
+				.claim("is_dual", userServiceModel.getDual())
 				.claim("firstLogin", userServiceModel.getFirstLogin())
 				.claim("listRoles", userServiceModel.getRoles())
 				.claim("department", userServiceModel.getDepartment())
@@ -124,7 +124,7 @@ public class JwtTokenUtil {
 		return (Blob) parseClaims(token).get("image");
 	}
 	public Boolean getUserDual(String token) {
-		return (Boolean) parseClaims(token).get("dual");
+		return (Boolean) parseClaims(token).get("is_dual");
 	}
 	public Boolean getFirstLogin(String token) {
 		return (Boolean) parseClaims(token).get("firstLogin");

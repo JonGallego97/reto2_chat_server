@@ -1,7 +1,6 @@
 package com.example.reto2_chat_server.chat.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.reto2_chat_server.chat.repository.Chat;
-import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
 import com.example.reto2_chat_server.chat.service.ChatService;
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;
-import com.example.reto2_chat_server.chat.service.UserChatServiceModel;
 import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
