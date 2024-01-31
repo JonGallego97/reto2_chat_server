@@ -27,6 +27,7 @@ public class FirebaseConfiguration {
 		@Value("${custom.firebase.credentials.path}")
 		private Resource firebaseCredentials;
 		
+		//cargar las credenciales
 		@Bean
 		GoogleCredentials googleCredentials() throws IOException {
 			System.out.println("entra");
@@ -49,7 +50,7 @@ public class FirebaseConfiguration {
 			}
 		}
 		
-		// Firebase
+	
 		@Bean
 		FirebaseApp firebaseApp(GoogleCredentials credentials) {
 		    FirebaseOptions options = FirebaseOptions.builder()
@@ -64,5 +65,8 @@ public class FirebaseConfiguration {
 		FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
 		    return FirebaseMessaging.getInstance(firebaseApp);
 		}
-	
+		
+		//crear bbdd
+
+		
 }

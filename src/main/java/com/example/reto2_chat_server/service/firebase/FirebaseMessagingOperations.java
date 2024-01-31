@@ -13,9 +13,9 @@ import com.google.firebase.messaging.Notification;
 @Service
 public class FirebaseMessagingOperations implements FirebaseMessagingOperationsService {
 	
-	@Autowired
-	private final FirebaseMessaging fcm;
 	
+	private final FirebaseMessaging fcm;
+	@Autowired
 	public FirebaseMessagingOperations(FirebaseMessaging fcm) {
     	this.fcm = fcm;
     }
@@ -37,6 +37,11 @@ public class FirebaseMessagingOperations implements FirebaseMessagingOperationsS
     	*/
     	// para muchos usuarios
     
+		if (deviceTokens.isEmpty()) {
+            System.out.println("No hay tokens de dispositivos para enviar notificaciones.");
+            return;
+        }
+
     	Notification notification = Notification.builder()
     		.setTitle("tituloaa")
     		.setBody("Cuerpoaaaa")
@@ -49,8 +54,9 @@ public class FirebaseMessagingOperations implements FirebaseMessagingOperationsS
 			.putData("body", "some data")
 			.build();
     	try {
+    		System.out.println(msg);
 			fcm.sendMulticast(msg);
-			System.out.println("enviado");
+			//System.out.println("enviado");
 		} catch (FirebaseMessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
