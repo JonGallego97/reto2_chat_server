@@ -122,6 +122,15 @@ public class ChatController {
 
 
 	}
+	
+	@GetMapping("/{chatId}/getUser")
+	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId){
+		try {
+			return chatService.getUserNotInChat(chatId);
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		}
+	}
 
 
 

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
 import com.example.reto2_chat_server.chat.repository.Chat;
-import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
 
 
 public interface ChatService {
@@ -19,6 +18,7 @@ public interface ChatService {
 	ResponseEntity<?> deleteChatById(Integer id);
 	ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd);
 	ResponseEntity<?> removeUsersFromChat(int chatId,List<UsersFromChatsPostRequest> usersToRemove);
+	ResponseEntity<?> getUserNotInChat(int chatId);
 
 	
 }

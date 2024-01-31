@@ -78,7 +78,7 @@ public class ChatServiveImpl implements ChatService{
          Timestamp currentTimestamp = new Timestamp(currentDate.getTime());
          chat.setCreatedat(currentTimestamp);
          chat.setUpdatedat(currentTimestamp);
-		chat = chatRepository.save(chat);
+		 chat = chatRepository.save(chat);
 		 
           
 		
@@ -179,6 +179,16 @@ public class ChatServiveImpl implements ChatService{
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT,"chat no encontrado");
 
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getUserNotInChat(int chatId) {
+		try {
+			return userRepository.findUsersEmailsNotInChat(chatId);
+			
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,"chat no encontrado");
 		}
 	}
 
