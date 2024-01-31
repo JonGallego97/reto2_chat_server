@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import com.example.reto2_chat_server.chat.repository.Chat;
 import com.example.reto2_chat_server.chat.repository.ChatRepository;
 import com.example.reto2_chat_server.chat.repository.ForeignKeysFromChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserChatsDAO;
+import com.example.reto2_chat_server.chat.repository.UserInfo;
 import com.example.reto2_chat_server.chat.repository.UserChatRepository;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatRepository;
@@ -106,6 +108,7 @@ public class ChatServiveImpl implements ChatService{
 	            for (UsersFromChatsPostRequest userFromChat : usersToAdd) {
 	            	
 	            	ForeignKeysFromChatsDAO foreignKeysFromChatsDAO = new ForeignKeysFromChatsDAO(userFromChat.getChatId(), userFromChat.getUserId());
+	            	
 	            	UsersFromChatDAO usersFromChatDAO = new UsersFromChatDAO(foreignKeysFromChatsDAO, userFromChat.isAdmin());
 	            	
 	            	UserChatsDAO userChatsDAO = userRepository.findById(foreignKeysFromChatsDAO.getUserId())
@@ -184,12 +187,24 @@ public class ChatServiveImpl implements ChatService{
 
 	@Override
 	public ResponseEntity<?> getUserNotInChat(int chatId) {
-		try {
-			return userRepository.findUsersEmailsNotInChat(chatId);
-			
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"chat no encontrado");
-		}
+	    try {
+	        Iterable<UserChatsDAO> allUsers = userRepository.findAll();
+
+	        List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
+
+	        List<UserInfo> usersNotInChat = new ArrayList<>();
+
+	        for (UserChatsDAO user : allUsers) {
+	            if (!emailsInChat.contains(user.getEmail())) {
+	                UserInfo userInfo = new UserInfo(user.getEmail(), user.getId());
+	                usersNotInChat.add(userInfo);
+	            }
+	        }
+
+	        return ResponseEntity.ok(usersNotInChat);
+	    } catch (Exception e) {
+	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
+	    }
 	}
 
 

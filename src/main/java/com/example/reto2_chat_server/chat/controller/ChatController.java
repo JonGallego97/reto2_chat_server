@@ -72,7 +72,6 @@ public class ChatController {
 	@PostMapping("/chats/{chatId}/add-users")
 	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd) {
 		try {
-
 			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd);
 
 			if (addUserResponse.getStatusCode() != HttpStatus.OK) {
