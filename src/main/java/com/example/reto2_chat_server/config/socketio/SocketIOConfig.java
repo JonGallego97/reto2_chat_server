@@ -21,6 +21,7 @@ import io.jsonwebtoken.Jwts;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://192.168.1.153:8080");
+		config.setOrigin("http://10.5.7.43:8080");
 
 		server = new SocketIOServer(config);
 
@@ -152,7 +153,7 @@ public class SocketIOConfig {
 
 			MessageFromServer messageFromServer = new MessageFromServer(0, MessageType.CLIENT, message, room,
 					DataType.TEXT, authorId, authorName);
-			client.getNamespace().getBroadcastOperations().sendEvent(SocketEvents.ON_SEND_MESSAGE.value,
+			client.getNamespace().getBroadcastOperations().sendEvent(SocketEvents.ON_DISCONECT_USER.value,
 					messageFromServer);
 
 		}
