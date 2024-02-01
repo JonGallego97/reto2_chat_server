@@ -41,7 +41,6 @@ public class ChatController {
         UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
         System.out.println(userDetails.getId());
         List<ChatServiceModel> response = chatService.getChats(userDetails.getId());
-		//TODO ¿quitar el setlist del user?
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -52,7 +51,6 @@ public class ChatController {
 		
 		ChatServiceModel response = chatService.createChat(chat);
 		if(response !=null) {
-			//TODO hay que pasar por parametro el id del usuario que lo ha creado
 			UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(idUser, response.getId(), true);
 			List<UsersFromChatsPostRequest> listRequest = new ArrayList<UsersFromChatsPostRequest>();
 			listRequest.add(creatorUserRequest);

@@ -177,7 +177,6 @@ public class SocketIOConfig {
 						new ChatServiceModel(Integer.parseInt(
 								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
 				Message insertMessage = messageService.insertMessage(message);
-				System.out.println(insertMessage);
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
 						data.getRoom(), DataType.TEXT, authorId, authorName);
 
