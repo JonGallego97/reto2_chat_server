@@ -28,14 +28,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	public UserServiceModel updateUserFirstLogin(AuthPutModel request) {
-	    Optional<UserDAO> optionalUserDAO = userRepository.findByEmail(request.getEmail());
-	    if (optionalUserDAO.isPresent()) {
+		UserDAO user =(UserDAO) loadUserByUsername(request.getEmail());
 	        UserDAO existingUserDAO = fromAuthPutModelToDAO(request);
+	        existingUserDAO.setListRoles(user.getListRoles());
+	        existingUserDAO.setDepartment(user.getDepartment());
+
 	        userRepository.save(existingUserDAO);
 	        return existingUserDAO.convertFromDAOtoService(existingUserDAO);
-	    } else {
-	        throw new UsernameNotFoundException("Usuario no encontrado para el email: " + request.getEmail());
-	    }
+	    
 	}
 
 	

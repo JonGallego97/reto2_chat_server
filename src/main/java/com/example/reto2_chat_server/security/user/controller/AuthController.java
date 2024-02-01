@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -70,7 +71,7 @@ public class AuthController {
 	public ResponseEntity<?> register(Authentication authentication, @RequestBody AuthPutModel request){
 		UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(BCryptVersion.$2Y,12);
 		String encodedPassword = passwordEncoder.encode(request.getNewPassword());
 		request.setNewPassword(encodedPassword);
 		request.setFirstLogin(false);
