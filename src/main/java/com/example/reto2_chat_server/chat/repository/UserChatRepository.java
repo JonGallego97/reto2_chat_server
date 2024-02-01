@@ -17,6 +17,11 @@ public interface UserChatRepository extends CrudRepository<UserChatsDAO, Integer
             "JOIN u.chats c " +
             "WHERE c.chat.id = :chatId")
      List<String> findEmailsInChat(@Param("chatId") int chatId);
+    
+    @Query("SELECT u.email as email, u.id as userId FROM UserChatsDAO u " +
+            "JOIN u.chats c " +
+            "WHERE c.chat.id = :chatId")
+     List<UserInfo> findUsersInChat(@Param("chatId") int chatId);
 
 }
 	

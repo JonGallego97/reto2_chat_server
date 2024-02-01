@@ -122,7 +122,7 @@ public class ChatController {
 
 	}
 	
-	@GetMapping("/{chatId}/getUser")
+	@GetMapping("/{chatId}/getUserToAdd")
 	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId){
 		try {
 			return chatService.getUserNotInChat(chatId);
@@ -131,6 +131,14 @@ public class ChatController {
 		}
 	}
 
+	@GetMapping("/{chatId}/getUserToDelete")
+	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId){
+		try {
+			return chatService.getUserInChat(chatId);
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		}
+	}
 
 
 }

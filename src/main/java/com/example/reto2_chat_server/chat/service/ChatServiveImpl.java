@@ -200,28 +200,6 @@ public class ChatServiveImpl implements ChatService{
 		}
 	}
 
-	@Override
-	public ResponseEntity<?> getUserNotInChat(int chatId) {
-	    try {
-	        Iterable<UserChatsDAO> allUsers = userRepository.findAll();
-
-	        List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
-
-	        List<UserInfo> usersNotInChat = new ArrayList<>();
-
-	        for (UserChatsDAO user : allUsers) {
-	            if (!emailsInChat.contains(user.getEmail())) {
-	                UserInfo userInfo = new UserInfo(user.getEmail(), user.getId());
-	                usersNotInChat.add(userInfo);
-	            }
-	        }
-
-	        return ResponseEntity.ok(usersNotInChat);
-	    } catch (Exception e) {
-	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
-	    }
-	}
-
 
 
 	public List<Integer> getChatIds(int id) {
@@ -298,5 +276,39 @@ public class ChatServiveImpl implements ChatService{
 				id.getUserId()
 				);		
 		return idService;
+	}
+
+
+
+	@Override
+	public ResponseEntity<?> getUserNotInChat(int chatId) {
+	    try {
+	        Iterable<UserChatsDAO> allUsers = userRepository.findAll();
+
+	        List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
+
+	        List<UserInfo> usersNotInChat = new ArrayList<>();
+
+	        for (UserChatsDAO user : allUsers) {
+	            if (!emailsInChat.contains(user.getEmail())) {
+	                UserInfo userInfo = new UserInfo(user.getEmail(), user.getId());
+	                usersNotInChat.add(userInfo);
+	            }
+	        }
+
+	        return ResponseEntity.ok(usersNotInChat);
+	    } catch (Exception e) {
+	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
+	    }
+	}
+
+	@Override
+	public ResponseEntity<?> getUserInChat(int chatId) {
+		 try {
+			 List<UserInfo> usersInChat = userRepository.findUsersInChat(chatId);	
+			 return ResponseEntity.ok(usersInChat);
+		} catch (Exception e) {
+	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
+	    }
 	}
 }
