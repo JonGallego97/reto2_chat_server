@@ -61,7 +61,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://192.168.1.153:8080");
+		config.setOrigin("http://10.5.7.56:8080");
 
 		server = new SocketIOServer(config);
 
@@ -208,12 +208,12 @@ public class SocketIOConfig {
 	private DataListener<UsersFromChatsPostRequest> onAddUser() {
 		return (senderClient, data, ackowledge) -> {
 			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
-				System.out.println("hola1");
 				for (SocketIOClient user : server.getAllClients()) {
-					System.out.println("hola2");
-					if(data.getUserId() == user.get(CLIENT_USER_ID_PARAM)) 
-					{	
-						List<ChatServiceModel> response = chatService.getChats(data.getChatId());
+					user.joinRoom("Group- " + data.getChatId());
+					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
+					Integer authorId = Integer.valueOf(authorIdS);
+					if(data.getUserId() == authorId) {	
+						ChatServiceModel response = chatService.getChatsById(data.getChatId());
 						System.out.println("holaaa"+ response.toString());
 						user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
 					}

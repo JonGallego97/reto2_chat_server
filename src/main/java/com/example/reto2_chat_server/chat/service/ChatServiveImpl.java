@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,6 +53,20 @@ public class ChatServiveImpl implements ChatService{
 		return result;
 		
 	}
+
+
+	@Override
+	public ChatServiceModel getChatsById(int id) {
+
+	    Chat chatOptional = chatRepository.findById(id).orElseThrow(
+	    		() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "No encontrado")
+	    		);
+	    System.out.println("a");
+	    ChatServiceModel newChat = deDAOaService(chatOptional);
+	    System.out.println("a");
+	    return newChat;
+	}
+
 	
 	@Override
 	public List<ChatServiceModel> getChats(int id) {
