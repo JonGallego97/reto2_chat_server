@@ -1,8 +1,5 @@
 package com.example.reto2_chat_server.chat.controller;
 
-import com.example.reto2_chat_server.chat.service.ChatServiceModel;
-import com.example.reto2_chat_server.chat.service.UserChatServiceModel;
-
 public class UsersFromChatsPostRequest {
 	
 	private Integer userId;
@@ -18,9 +15,6 @@ public class UsersFromChatsPostRequest {
 		this.chatId = chatId;
 		this.isAdmin = isAdmin;
 	}
-
-
-
 
 	public UsersFromChatsPostRequest() {
 		super();
