@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
 
-import jakarta.persistence.Column;
-
 public class ChatServiceModel {
 	private int id;
 	private boolean isPublic;

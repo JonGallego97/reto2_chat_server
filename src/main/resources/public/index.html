@@ -27,17 +27,17 @@
     <div id="messages"></div>
 
     <form id="form" action="">
-        <input id="room" name="room" autocomplete="off" placeholder="Room..." value="Group- 2"/>
+        <input id="room" name="room" autocomplete="off" placeholder="Room..." value="Group- 1"/>
         <input id="message" name="message" autocomplete="off" /><button type="submit">Enviar</button>
     </form>
 
     <script>
         // Conexion al servidor Socket.IO
-        const socket = io('http://192.168.1.153:8085',
+        const socket = io('http://10.5.7.80:8085',
             {
                 withCredentials: true,
                 extraHeaders: {
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwYW9sYS5sZXJtYWFsQGVsb3JyaWV0YS1lcnJla2FtYXJpLmNvbSIsImlzcyI6IkFEVF9EQU0iLCJleHAiOjE3MDY4MTQxMDIsImlkIjoyLCJuYW1lIjoiUGFvbGEiLCJlbWFpbCI6InBhb2xhLmxlcm1hYWxAZWxvcnJpZXRhLWVycmVrYW1hcmkuY29tIiwic3VybmFtZTEiOiJMZXJtYSIsInN1cm5hbWUyIjoiQWxjYWxhIiwiYWRkcmVzcyI6IlLDumEgQWJhZCwgMjQsIDfCuiBELCAyNzcwNCwgTGEgQ2FyZG9uYSIsIkROSSI6IjM0MDI2MjEwWCIsInBob25lTnVtYmVyMSI6MTM1MDgxNjA5LCJwaG9uZU51bWJlcjIiOjU4MDU3ODExMCwiZmlyc3RMb2dpbiI6dHJ1ZSwibGlzdFJvbGVzIjpbeyJpZCI6MywibmFtZSI6IkFMVU1OTyJ9XX0.09mbNzNjhW-O4DqIZ6gGrTcOR60sw03kymM4E7IUu7ET5ktYaVCHx88BizxA5pezS74WPNeblXU624p_bIyByw'
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJHYWJyaWVsLlZpY2VudGVBbEBlbG9ycmlldGEtZXJyZWthbWFyaS5jb20iLCJpc3MiOiJBRFRfREFNIiwiZXhwIjoxNzA2NjI4MjM2LCJpZCI6MSwibmFtZSI6IkdhYnJpZWwiLCJlbWFpbCI6IkdhYnJpZWwuVmljZW50ZUFsQGVsb3JyaWV0YS1lcnJla2FtYXJpLmNvbSIsInN1cm5hbWUxIjoiVmljZW50ZSIsInN1cm5hbWUyIjoiQWxjYWxhIiwiYWRkcmVzcyI6IkNhbWnDsW8gSmF2aWVyLCAyLCDDgXRpY28gMcK6LCA1MzUwOSwgTXVuZ3XDrWEgZGUgU2FuIFBlZHJvIiwiRE5JIjoiNTcyMjIzODUiLCJwaG9uZU51bWJlcjEiOjI3Nzc5NzI2NywicGhvbmVOdW1iZXIyIjoxODUwMDY5NjQsImZpcnN0TG9naW4iOnRydWUsImxpc3RSb2xlcyI6W119.q6nCQtK1oxd9C2_l2pILiBnfxN-NmcFCRx5VzbipICI1lGpmH03nknTJ-CfW1K48LtQBPjCyj-dFTIrAVvxMYA'
                 }
             }
         ); 

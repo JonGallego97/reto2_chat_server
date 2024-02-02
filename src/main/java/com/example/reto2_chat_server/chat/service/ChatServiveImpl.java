@@ -43,11 +43,10 @@ public class ChatServiveImpl implements ChatService{
 	
 	@Override
 	public List<Integer> getChatsIdsByUserId(Integer userId) {
-		// TODO Auto-generated method stub
-		List<UsersFromChatDAO> findByUser_Id = usersFromChatRepository.findByUser_Id(userId);
+		List<UsersFromChatDAO> findByUserId = usersFromChatRepository.findByUser_Id(userId);
 		List<Integer> result = new ArrayList<Integer>();
 		
-		for (UsersFromChatDAO usersFromChatDAO : findByUser_Id) {
+		for (UsersFromChatDAO usersFromChatDAO : findByUserId) {
 			result.add(usersFromChatDAO.getChat().getId());
 		}
 		return result;

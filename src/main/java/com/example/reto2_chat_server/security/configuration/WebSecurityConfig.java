@@ -40,18 +40,11 @@ public class WebSecurityConfig {
 				//TODO Revisar si hay que permitir alguno más
 				
 				.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-				//.requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()
-				.requestMatchers(HttpMethod.GET,"api/chats").permitAll()
+				.requestMatchers(HttpMethod.PUT, "/api/auth/register").authenticated()
 
+				.requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()
 
-
-
-				//.requestMatchers(HttpMethod.GET,"/api/sockets/chats").permitAll()
-				//.requestMatchers(HttpMethod.GET,"/api/sockets/send-message").permitAll()
-				//.requestMatchers(HttpMethod.POST,"/api/sockets//join-chat/{chat}/{idUser}").permitAll()
-				
-
-				
+				//TODO revisar esto de aqui y ponerlo autenticated
 				.anyRequest().permitAll()
 				
 				).exceptionHandling((exceptionHandling) ->
