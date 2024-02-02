@@ -5,6 +5,11 @@ import jakarta.validation.constraints.NotNull;
 
 
 public class AuthRequest {
+	@Override
+	public String toString() {
+		return "AuthRequest [email=" + email + ", password=" + password + "]";
+	}
+
 	@NotNull @Email
 	private String email;
 	

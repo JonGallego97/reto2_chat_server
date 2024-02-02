@@ -3,11 +3,13 @@ package com.example.reto2_chat_server.chat.service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import com.example.reto2_chat_server.chat.repository.ChatRepository;
 import com.example.reto2_chat_server.chat.repository.ForeignKeysFromChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserInfo;
+import com.example.reto2_chat_server.chat.repository.UserInfoDao;
 import com.example.reto2_chat_server.chat.repository.UserChatRepository;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatRepository;
@@ -302,11 +305,22 @@ public class ChatServiveImpl implements ChatService{
 	}
 
 	@Override
-	public ResponseEntity<?> getUserInChat(int chatId) {
+	public ResponseEntity<?> getUserInChat(int chatId, int userId) {
 		 try {
-			 List<UserInfo> usersInChat = userRepository.findUsersInChat(chatId);	
-			 return ResponseEntity.ok(usersInChat);
+			 List<UserInfoDao> usersInChat = userRepository.findNonAdminUsersInChat(chatId, userId);	
+			 System.out.println("asdasd");
+			 List<UserInfo> usersInChatInto = new ArrayList<>();
+			 for (UserInfoDao userInfo : usersInChat) {
+				UserInfo user = new UserInfo(
+						userInfo.getEmail(),
+						userInfo.getUserId()						
+						);
+				usersInChatInto.add(user);
+			}
+			 System.out.println(usersInChatInto.toString());
+			 return ResponseEntity.ok(usersInChatInto);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
 	    }
 	}

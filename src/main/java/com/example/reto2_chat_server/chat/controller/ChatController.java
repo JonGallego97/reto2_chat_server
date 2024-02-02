@@ -83,9 +83,10 @@ public class ChatController {
 		}
 	}
 	
-	@DeleteMapping("/chats/{chatId}/remove-users")
+	@PostMapping("/chats/{chatId}/remove-users")
 	public ResponseEntity<?> removeUsersFromChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToRemove) {
 	    try {
+	    	System.out.println("hola");
 	        ResponseEntity<?> removeUserResponse = chatService.removeUsersFromChat(chatId, usersToRemove);
 
 	        if (removeUserResponse.getStatusCode() != HttpStatus.OK) {
@@ -127,9 +128,10 @@ public class ChatController {
 	}
 
 	@GetMapping("/{chatId}/getUserToDelete")
-	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId){
+	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId, Authentication authentication) {
 		try {
-			return chatService.getUserInChat(chatId);
+	        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+			return chatService.getUserInChat(chatId, userDetails.getId());
 		}catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
 		}
