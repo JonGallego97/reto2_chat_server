@@ -1,6 +1,5 @@
 package com.example.reto2_chat_server.model.message;
 
-import java.sql.Blob;
 import java.util.Date;
 
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;

@@ -2,6 +2,7 @@ package com.example.reto2_chat_server.config.socketio;
 
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
+import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
 import com.example.reto2_chat_server.chat.service.ChatService;
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;
 import com.example.reto2_chat_server.chat.service.MessageService;
@@ -11,13 +12,10 @@ import com.example.reto2_chat_server.model.message.MessageFromClient;
 import com.example.reto2_chat_server.model.message.MessageFromServer;
 import com.example.reto2_chat_server.model.message.MessagePostRequestToSender;
 import com.example.reto2_chat_server.model.message.MessageSend;
-import com.example.reto2_chat_server.model.message.MessageServiceModel;
 import com.example.reto2_chat_server.model.message.MessageType;
 import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
 
@@ -27,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.SQLException;
-import javax.sql.rowset.serial.SerialBlob;
 
 @Configuration
 public class SocketIOConfig {
@@ -60,13 +55,14 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://192.168.1.153:8080");
+		config.setOrigin("http://10.5.7.16:8080");
 
 		server = new SocketIOServer(config);
 
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
 		server.addDisconnectListener(new MyDisconnectListener());
 		server.addEventListener(SocketEvents.ON_MESSAGE_RECEIVED.value, MessageFromClient.class, onSendMessage());
+		server.addEventListener(SocketEvents.ON_ADD_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onAddUser());
 		server.start();
 
 		return server;
@@ -183,7 +179,6 @@ public class SocketIOConfig {
 						new ChatServiceModel(Integer.parseInt(
 								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
 				Message insertMessage = messageService.insertMessage(message);
-				System.out.println(insertMessage);
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
 						data.getRoom(), DataType.TEXT, authorId, authorName);
 
@@ -199,6 +194,24 @@ public class SocketIOConfig {
 				// TODO falta manejar el no poder enviar el mensaje
 			}
 
+		};
+
+	}
+	
+	private DataListener<UsersFromChatsPostRequest> onAddUser() {
+		return (senderClient, data, ackowledge) -> {
+			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
+				for (SocketIOClient user : server.getAllClients()) {
+					user.joinRoom("Group- " + data.getChatId());
+					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
+					Integer authorId = Integer.valueOf(authorIdS);
+					if(data.getUserId() == authorId) {	
+						ChatServiceModel response = chatService.getChatsById(data.getChatId());
+						System.out.println("holaaa"+ response.toString());
+						user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
+					}
+				}
+			}
 		};
 
 	}
