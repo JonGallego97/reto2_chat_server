@@ -12,7 +12,9 @@ public class ChatServiceModel {
 	private String name;
 	private Date createdAt;
 	private Date updatedAt;
-	
+
+	private List<MessageServiceModel> listMessages;
+    private List<UsersFromChatServiceModel> listUsers;
 	
 	public ChatServiceModel(int id, boolean isPublic, String name, Date createdAt, Date updatedAt) {
 		super();
@@ -22,8 +24,6 @@ public class ChatServiceModel {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
-	private List<MessageServiceModel> listMessages;
-    private List<UsersFromChatServiceModel> listUsers;
 	public ChatServiceModel(int id, boolean isPublic, String name, Date createdAt, Date updatedAt, List<MessageServiceModel> listMessages,
 			List<UsersFromChatServiceModel> listUsers) {
 		super();

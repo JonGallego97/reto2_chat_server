@@ -67,7 +67,6 @@ public class ChatController {
 	@PostMapping("/chats/{chatId}/add-users")
 	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd) {
 		try {
-
 			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd);
 
 			if (addUserResponse.getStatusCode() != HttpStatus.OK) {
@@ -117,7 +116,24 @@ public class ChatController {
 
 
 	}
+	
+	@GetMapping("/{chatId}/getUserToAdd")
+	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId){
+		try {
+			return chatService.getUserNotInChat(chatId);
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		}
+	}
 
+	@GetMapping("/{chatId}/getUserToDelete")
+	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId){
+		try {
+			return chatService.getUserInChat(chatId);
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		}
+	}
 
 
 }

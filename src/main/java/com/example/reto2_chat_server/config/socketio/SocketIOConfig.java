@@ -2,6 +2,7 @@ package com.example.reto2_chat_server.config.socketio;
 
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
+import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
 import com.example.reto2_chat_server.chat.service.ChatService;
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;
 import com.example.reto2_chat_server.chat.service.MessageService;
@@ -61,6 +62,7 @@ public class SocketIOConfig {
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
 		server.addDisconnectListener(new MyDisconnectListener());
 		server.addEventListener(SocketEvents.ON_MESSAGE_RECEIVED.value, MessageFromClient.class, onSendMessage());
+		server.addEventListener(SocketEvents.ON_ADD_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onAddUser());
 		server.start();
 
 		return server;
@@ -192,6 +194,24 @@ public class SocketIOConfig {
 				// TODO falta manejar el no poder enviar el mensaje
 			}
 
+		};
+
+	}
+	
+	private DataListener<UsersFromChatsPostRequest> onAddUser() {
+		return (senderClient, data, ackowledge) -> {
+			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
+				for (SocketIOClient user : server.getAllClients()) {
+					user.joinRoom("Group- " + data.getChatId());
+					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
+					Integer authorId = Integer.valueOf(authorIdS);
+					if(data.getUserId() == authorId) {	
+						ChatServiceModel response = chatService.getChatsById(data.getChatId());
+						System.out.println("holaaa"+ response.toString());
+						user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
+					}
+				}
+			}
 		};
 
 	}
