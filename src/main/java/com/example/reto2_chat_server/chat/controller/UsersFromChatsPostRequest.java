@@ -16,9 +16,6 @@ public class UsersFromChatsPostRequest {
 		this.isAdmin = isAdmin;
 	}
 
-
-
-
 	public UsersFromChatsPostRequest() {
 		super();
 	}

@@ -3,6 +3,7 @@ package com.example.reto2_chat_server.config.socketio;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
 import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
+import com.example.reto2_chat_server.chat.repository.UserInfoDao;
 import com.example.reto2_chat_server.chat.service.ChatService;
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;
 import com.example.reto2_chat_server.chat.service.MessageService;
@@ -55,7 +56,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://10.5.7.16:8080");
+		config.setOrigin("http://10.5.7.79:8080");
 
 		server = new SocketIOServer(config);
 
@@ -63,6 +64,7 @@ public class SocketIOConfig {
 		server.addDisconnectListener(new MyDisconnectListener());
 		server.addEventListener(SocketEvents.ON_MESSAGE_RECEIVED.value, MessageFromClient.class, onSendMessage());
 		server.addEventListener(SocketEvents.ON_ADD_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onAddUser());
+		server.addEventListener(SocketEvents.ON_DELETE_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onDeleteUser());
 		server.start();
 
 		return server;
@@ -202,16 +204,39 @@ public class SocketIOConfig {
 		return (senderClient, data, ackowledge) -> {
 			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
 				for (SocketIOClient user : server.getAllClients()) {
-					user.joinRoom("Group- " + data.getChatId());
 					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
 					Integer authorId = Integer.valueOf(authorIdS);
 					if(data.getUserId() == authorId) {	
+						user.joinRoom("Group- " + data.getChatId());
 						ChatServiceModel response = chatService.getChatsById(data.getChatId());
 						System.out.println("holaaa"+ response.toString());
 						user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
 					}
 				}
 			}
+		};
+
+	}
+	
+	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {
+		return (senderClient, data, ackowledge) -> {
+			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
+				for (SocketIOClient user : server.getAllClients()) {
+					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
+					Integer authorId = Integer.valueOf(authorIdS);
+					if(data.getUserId() == authorId) {	
+						user.leaveRoom("Group- " + data.getChatId());
+						break;
+					}
+				}
+			}
+			UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
+					data.getUserId(),
+					data.getChatId(),
+					false
+					);	
+			System.out.println("ada");
+			server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 		};
 
 	}
