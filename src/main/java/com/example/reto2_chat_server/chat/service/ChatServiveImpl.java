@@ -285,7 +285,7 @@ public class ChatServiveImpl implements ChatService{
 	@Override
 	public ResponseEntity<?> getUserNotInChat(int chatId) {
 	    try {
-	        Iterable<UserChatsDAO> allUsers = userRepository.findAll();
+	        List<UserChatsDAO> allUsers = userRepository.findAllByOrderByEmail();
 
 	        List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
 

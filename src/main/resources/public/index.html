@@ -33,11 +33,11 @@
 
     <script>
         // Conexion al servidor Socket.IO
-        const socket = io('http://10.5.7.80:8085',
+        const socket = io('http://192.168.1.153:8085',
             {
                 withCredentials: true,
                 extraHeaders: {
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJHYWJyaWVsLlZpY2VudGVBbEBlbG9ycmlldGEtZXJyZWthbWFyaS5jb20iLCJpc3MiOiJBRFRfREFNIiwiZXhwIjoxNzA2NjI4MjM2LCJpZCI6MSwibmFtZSI6IkdhYnJpZWwiLCJlbWFpbCI6IkdhYnJpZWwuVmljZW50ZUFsQGVsb3JyaWV0YS1lcnJla2FtYXJpLmNvbSIsInN1cm5hbWUxIjoiVmljZW50ZSIsInN1cm5hbWUyIjoiQWxjYWxhIiwiYWRkcmVzcyI6IkNhbWnDsW8gSmF2aWVyLCAyLCDDgXRpY28gMcK6LCA1MzUwOSwgTXVuZ3XDrWEgZGUgU2FuIFBlZHJvIiwiRE5JIjoiNTcyMjIzODUiLCJwaG9uZU51bWJlcjEiOjI3Nzc5NzI2NywicGhvbmVOdW1iZXIyIjoxODUwMDY5NjQsImZpcnN0TG9naW4iOnRydWUsImxpc3RSb2xlcyI6W119.q6nCQtK1oxd9C2_l2pILiBnfxN-NmcFCRx5VzbipICI1lGpmH03nknTJ-CfW1K48LtQBPjCyj-dFTIrAVvxMYA'
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJudXJpYS5hcnJveW91bEBlbG9ycmlldGEtZXJyZWthbWFyaS5jb20iLCJpc3MiOiJBRFRfREFNIiwiZXhwIjoxNzA3MDQyNTg5LCJpZCI6MSwibmFtZSI6Ik51cmlhIiwiZW1haWwiOiJudXJpYS5hcnJveW91bEBlbG9ycmlldGEtZXJyZWthbWFyaS5jb20iLCJzdXJuYW1lMSI6IkFycm95byIsInN1cm5hbWUyIjoiVWxsb2EiLCJhZGRyZXNzIjoiUGxhw6dhIE1hcsOtbiwgNzY1LCBCYWpvcywgMTA3OTMsIFNhbiBDYXJyZXJvIiwiRE5JIjoiMzk2NzYzNjZEIiwicGhvbmVOdW1iZXIxIjoyNDQzMTA5NjUsInBob25lTnVtYmVyMiI6NTkzMTAxNTg5LCJpc19kdWFsIjpmYWxzZSwiZmlyc3RMb2dpbiI6ZmFsc2UsImxpc3RSb2xlcyI6W3siaWQiOjMsIm5hbWUiOiJBTFVNTk8ifV19.v1-OvPwYSYoxyMRk0te4Qf9iLrelMH4TW8FhbQgeuP1vzuv64lnXHnsaUYIPzdDZ6r9E5wNpwR0IQ_ZYAKq9lg'
                 }
             }
         ); 

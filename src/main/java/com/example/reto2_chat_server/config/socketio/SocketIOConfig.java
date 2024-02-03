@@ -56,7 +56,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://10.5.7.79:8080");
+		config.setOrigin("http://192.168.1.153:8080");
 
 		server = new SocketIOServer(config);
 
@@ -163,7 +163,7 @@ public class SocketIOConfig {
 			Integer authorId = Integer.valueOf(authorIdS);
 			String authorName = senderClient.get(CLIENT_USER_NAME_PARAM);
 
-			System.out.printf("Mensaje recibido de (ID: %d, Email: %s). El mensaje es el siguiente: %s \n", authorId,
+			System.out.printf("Mensaje recibido de (ID: %d, Email: %s). El mensaje es el siguiente: %s del tipo " +data.getType() + " \n", authorId,
 					authorName, data.toString());
 
 			if (checkIfIsAllowedToSend(senderClient, data.getRoom())) {
@@ -177,12 +177,12 @@ public class SocketIOConfig {
 				// Convert milliseconds to java.sql.Date
 				Date currentDate = new Date(currentTimeMillis);
 
-				MessageSend message = new MessageSend(0, DataType.TEXT, data.getMessage(), currentDate,currentDate, userId,
+				MessageSend message = new MessageSend(0, data.getType(), data.getMessage(), currentDate,currentDate, userId,
 						new ChatServiceModel(Integer.parseInt(
 								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
 				Message insertMessage = messageService.insertMessage(message);
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
-						data.getRoom(), DataType.TEXT, authorId, authorName);
+						data.getRoom(), data.getType(), authorId, authorName);
 
 				MessagePostRequestToSender responseTosender = new MessagePostRequestToSender(insertMessage.getId(), data.getIdRoom());
 				
@@ -221,6 +221,12 @@ public class SocketIOConfig {
 	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {
 		return (senderClient, data, ackowledge) -> {
 			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
+				UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
+						data.getUserId(),
+						data.getChatId(),
+						false
+						);	
+				server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 				for (SocketIOClient user : server.getAllClients()) {
 					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
 					Integer authorId = Integer.valueOf(authorIdS);
@@ -230,13 +236,6 @@ public class SocketIOConfig {
 					}
 				}
 			}
-			UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
-					data.getUserId(),
-					data.getChatId(),
-					false
-					);	
-			System.out.println("ada");
-			server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 		};
 
 	}
