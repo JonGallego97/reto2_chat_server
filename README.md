@@ -28,6 +28,7 @@ Para el apartado del server en Java se ha utilizado:
 - confirmación de datos personales.
 - Envío de mensajes en tiempo real.
 - Comunicación en tiempo real.
+- Creacion y gestión de chats.
 
 
 
