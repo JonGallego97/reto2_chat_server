@@ -56,7 +56,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("http://10.5.7.79:8080");
+		config.setOrigin("http://192.168.56.1:8080");
 
 		server = new SocketIOServer(config);
 
@@ -209,7 +209,6 @@ public class SocketIOConfig {
 					if(data.getUserId() == authorId) {	
 						user.joinRoom("Group- " + data.getChatId());
 						ChatServiceModel response = chatService.getChatsById(data.getChatId());
-						System.out.println("holaaa"+ response.toString());
 						user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
 					}
 				}
@@ -235,7 +234,6 @@ public class SocketIOConfig {
 					data.getChatId(),
 					false
 					);	
-			System.out.println("ada");
 			server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 		};
 
