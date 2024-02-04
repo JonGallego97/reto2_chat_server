@@ -1,7 +1,11 @@
 package com.example.reto2_chat_server.chat.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -28,9 +32,9 @@ import com.example.reto2_chat_server.chat.repository.UserInfoDao;
 import com.example.reto2_chat_server.chat.repository.UserChatRepository;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatDAO;
 import com.example.reto2_chat_server.chat.repository.UsersFromChatRepository;
+import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.Message;
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -234,6 +238,11 @@ public class ChatServiveImpl implements ChatService{
 	private List<MessageServiceModel> deDAOaServiceMessages(List<Message> messages) {
 		List<MessageServiceModel> response = new ArrayList<MessageServiceModel>();
 		for (Message messageDAO : messages) {
+			if(messageDAO.getDataType() == DataType.IMAGE) {
+				messageDAO.setContent(getImageUser(messageDAO.getContent()));
+			}
+			
+			
 			MessageServiceModel messageService = new MessageServiceModel(
 					messageDAO.getId(),
 					messageDAO.getDataType(),
@@ -247,6 +256,20 @@ public class ChatServiveImpl implements ChatService{
 		}
 		return response;
 	}
+
+	private String getImageUser(String content) {
+		try {
+			File file = new File(content);
+			byte[] fileContent;
+			fileContent = Files.readAllBytes(file.toPath());
+			return Base64.getEncoder().encodeToString(fileContent);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 
 	private UserChatServiceModel deDAOaServiceUser(UserChatsDAO user) {
 		UserChatServiceModel serviceUser = new UserChatServiceModel(
