@@ -1,6 +1,6 @@
 # ElorChat Server
 
-![Chat App](![elorchat_recortada.png](elorchat_recortada.png))
+![Chat App](elorchat_recortada.png)
 
 ## Descripción del Proyecto
 
