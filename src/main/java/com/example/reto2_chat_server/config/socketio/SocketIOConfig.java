@@ -1,5 +1,5 @@
 package com.example.reto2_chat_server.config.socketio;
-
+import java.text.SimpleDateFormat;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
 import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
@@ -16,17 +16,30 @@ import com.example.reto2_chat_server.model.message.MessageSend;
 import com.example.reto2_chat_server.model.message.MessageType;
 import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
 
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jackson.JacksonProperties.Datatype;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
+
 
 @Configuration
 public class SocketIOConfig {
@@ -163,7 +176,7 @@ public class SocketIOConfig {
 			Integer authorId = Integer.valueOf(authorIdS);
 			String authorName = senderClient.get(CLIENT_USER_NAME_PARAM);
 
-			System.out.printf("Mensaje recibido de (ID: %d, Email: %s). El mensaje es el siguiente: %s \n", authorId,
+			System.out.printf("Mensaje recibido de (ID: %d, Email: %s). El mensaje es el siguiente: %s del tipo " +data.getType() + " \n", authorId,
 					authorName, data.toString());
 
 			if (checkIfIsAllowedToSend(senderClient, data.getRoom())) {
@@ -177,12 +190,18 @@ public class SocketIOConfig {
 				// Convert milliseconds to java.sql.Date
 				Date currentDate = new Date(currentTimeMillis);
 
-				MessageSend message = new MessageSend(0, DataType.TEXT, data.getMessage(), currentDate,currentDate, userId,
+				MessageSend message = new MessageSend(0, data.getType(), data.getMessage(), currentDate,currentDate, userId,
 						new ChatServiceModel(Integer.parseInt(
 								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
+				if(data.getType() == DataType.IMAGE) {
+					message.setContent(safeImage(data.getMessage(), authorName));
+				}else if(data.getType() == DataType.FILE) {
+					message.setContent(safeFile(data.getMessage(), authorName));
+				}
+				
 				Message insertMessage = messageService.insertMessage(message);
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
-						data.getRoom(), DataType.TEXT, authorId, authorName);
+						data.getRoom(), data.getType(), authorId, authorName);
 
 				MessagePostRequestToSender responseTosender = new MessagePostRequestToSender(insertMessage.getId(), data.getIdRoom());
 				
@@ -200,6 +219,54 @@ public class SocketIOConfig {
 
 	}
 	
+	private String safeFile(String message, String authorName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String safeImage(String message, String authorName) {
+		
+		try {// TODO Auto-generated method stub
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+	        String currentDate = dateFormat.format(new java.util.Date());
+	        
+	        
+			String extensionArchivo = decetMineType(message);
+	        String fileName = authorName + "_" + currentDate;
+			String outputFile = "src/main/resources/static/images/" + fileName;
+			System.out.println(message);
+			byte[] decodedImg = Base64.getDecoder().decode(message.getBytes(StandardCharsets.UTF_8));
+			Path destinationFile = Paths.get(outputFile);
+			Files.write(destinationFile, decodedImg);
+			return outputFile;
+			
+		} catch (IOException e) {
+			e.printStackTrace();	
+			return null;
+		}        
+	}
+	
+	
+	private String  decetMineType(String base64Content) {
+		HashMap<String, String> signatures = new HashMap<String, String>();
+		signatures.put("JVBERi0", ".pdf");
+		signatures.put("R0lGODdh", ".gif");
+		signatures.put("R0lGODlh", ".gif");
+		signatures.put("iVBORw0KGgo", ".png");
+		signatures.put("/9j/", ".jpg");
+		String response = "";
+		
+		for (Map.Entry<String, String> entry : signatures.entrySet()) {
+			String key = entry.getKey();
+			if(base64Content.indexOf(key) == 0) {
+				response = entry.getValue();
+			}
+		}
+			
+		return response;		
+	}
+	
+
 	private DataListener<UsersFromChatsPostRequest> onAddUser() {
 		return (senderClient, data, ackowledge) -> {
 			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
@@ -220,6 +287,12 @@ public class SocketIOConfig {
 	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {
 		return (senderClient, data, ackowledge) -> {
 			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
+				UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
+						data.getUserId(),
+						data.getChatId(),
+						false
+						);	
+				server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 				for (SocketIOClient user : server.getAllClients()) {
 					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
 					Integer authorId = Integer.valueOf(authorIdS);

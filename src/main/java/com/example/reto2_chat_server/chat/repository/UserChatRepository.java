@@ -19,8 +19,10 @@ public interface UserChatRepository extends CrudRepository<UserChatsDAO, Integer
     
     @Query("SELECT NEW com.example.reto2_chat_server.chat.repository.UserInfoDao(u.user.email, u.user.id) " +
     	       "FROM UsersFromChatDAO u " +
-    	       "WHERE u.chat.id = :chatId AND u.isAdmin = false AND u.user.id != :userId")
+    	       "WHERE u.chat.id = :chatId AND u.isAdmin = false AND u.user.id != :userId order by u.user.email")
     	List<UserInfoDao> findNonAdminUsersInChat(@Param("chatId") int chatId, @Param("userId") int userId);
+
+    List<UserChatsDAO> findAllByOrderByEmail();
 
 
 
