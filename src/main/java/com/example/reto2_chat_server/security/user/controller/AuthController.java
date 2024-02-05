@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +18,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.example.reto2_chat_server.department.service.DepartmentServiceModel;
 import com.example.reto2_chat_server.model.Role;
 import com.example.reto2_chat_server.model.RoleServiceModel;
 import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.repository.UserDAO;
-import com.example.reto2_chat_server.security.user.service.UserService;
 import com.example.reto2_chat_server.security.user.service.UserServiceImpl;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
