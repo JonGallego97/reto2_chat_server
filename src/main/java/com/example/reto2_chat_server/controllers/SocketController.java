@@ -97,12 +97,10 @@ public class SocketController {
 
 	private SocketIOClient findClientByUserId(Integer idUser) {
 		SocketIOClient response = null;
-		System.out.println(idUser);
 
 		Collection<SocketIOClient> clients = socketIOServer.getAllClients();
 		for (SocketIOClient client: clients) {
 			Integer currentClientId = Integer.valueOf(client.get(SocketIOConfig.CLIENT_USER_ID_PARAM));
-			System.out.println(currentClientId);
 			if (currentClientId == idUser) {
 				response = client;
 				break;
