@@ -24,6 +24,9 @@ public interface UserChatRepository extends CrudRepository<UserChatsDAO, Integer
 
     List<UserChatsDAO> findAllByOrderByEmail();
 
+    
+
+
 
 
 
