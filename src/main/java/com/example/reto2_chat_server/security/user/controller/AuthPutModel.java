@@ -1,7 +1,5 @@
 package com.example.reto2_chat_server.security.user.controller;
 
-import java.sql.Blob;
-
 public class AuthPutModel {
 	private Integer id;
 	private String email;
