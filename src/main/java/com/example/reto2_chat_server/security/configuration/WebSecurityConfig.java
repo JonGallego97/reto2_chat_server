@@ -42,7 +42,7 @@ public class WebSecurityConfig {
 				.requestMatchers(HttpMethod.PUT, "/api/auth/register").authenticated()
 
 				//TODO revisar esto de aqui y ponerlo autenticated
-				.anyRequest().permitAll()
+				.anyRequest().authenticated()
 				
 				).exceptionHandling((exceptionHandling) ->
 				

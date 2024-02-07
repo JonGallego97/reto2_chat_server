@@ -72,12 +72,13 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("https://10.5.7.15:443");
+		config.setOrigin("https://10.5.7.18:443");
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
+		/*
 		InputStream stream = keyStoreFile.getInputStream();
 		config.setKeyStore(stream);
-
+		*/
 		server = new SocketIOServer(config);
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
 		server.addDisconnectListener(new MyDisconnectListener());
@@ -239,7 +240,6 @@ public class SocketIOConfig {
 			String extensionArchivo = decetMineType(message);
 			String fileName = authorName + "_" + currentDate;
 			String outputFile = "src/main/resources/static/images/" + fileName;
-			System.out.println(message);
 			byte[] decodedImg = Base64.getDecoder().decode(message.getBytes(StandardCharsets.UTF_8));
 			Path destinationFile = Paths.get(outputFile);
 			Files.write(destinationFile, decodedImg);
