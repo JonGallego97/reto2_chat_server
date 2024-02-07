@@ -30,7 +30,7 @@ public class Chat {
 	private boolean isPublic;
 	@Column(length = 60)
 	private String name;
-	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval =  true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE, orphanRemoval =  true, fetch = FetchType.EAGER)
 	@JsonBackReference
 	private List<Message> messages;
 	
@@ -40,7 +40,7 @@ public class Chat {
 	@Column(name = "updated_at")
 	private Date updatedat;
 	
-	@OneToMany(mappedBy = "chat", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE	, fetch=FetchType.EAGER)
 	private List<UsersFromChatDAO> users;
 
 	public Chat(int id, boolean isPublic, String name, List<Message> messages, List<UsersFromChatDAO> users) {

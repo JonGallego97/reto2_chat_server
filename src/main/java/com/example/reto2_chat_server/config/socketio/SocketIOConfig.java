@@ -72,13 +72,13 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("https://10.5.7.28:443");
-		config.setKeyStorePassword(keyStorePassword);
+		config.setOrigin("https://10.5.7.15:443");
+		config.setMaxFramePayloadLength(2621440);
+		config.setMaxHttpContentLength(2621440);
 		InputStream stream = keyStoreFile.getInputStream();
 		config.setKeyStore(stream);
 
 		server = new SocketIOServer(config);
-
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
 		server.addDisconnectListener(new MyDisconnectListener());
 		server.addEventListener(SocketEvents.ON_MESSAGE_RECEIVED.value, MessageFromClient.class, onSendMessage());
@@ -234,9 +234,8 @@ public class SocketIOConfig {
 
 		try {// TODO Auto-generated method stub
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-			String currentDate = dateFormat.format(new java.util.Date());
-
-
+	    String currentDate = dateFormat.format(new java.util.Date());
+	        
 			String extensionArchivo = decetMineType(message);
 			String fileName = authorName + "_" + currentDate;
 			String outputFile = "src/main/resources/static/images/" + fileName;
@@ -275,15 +274,13 @@ public class SocketIOConfig {
 
 	private DataListener<UsersFromChatsPostRequest> onAddUser() {
 		return (senderClient, data, ackowledge) -> {
-			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
-				for (SocketIOClient user : server.getAllClients()) {
-					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
-					Integer authorId = Integer.valueOf(authorIdS);
-					if(data.getUserId() == authorId) {	
-						user.joinRoom("Group- " + data.getChatId());
-						ChatServiceModel response = chatService.getChatsById(data.getChatId());
-						user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
-					}
+			for (SocketIOClient user : server.getAllClients()) {
+				String authorIdS = user.get(CLIENT_USER_ID_PARAM);
+				Integer authorId = Integer.valueOf(authorIdS);
+				if(data.getUserId() == authorId) {	
+					user.joinRoom("Group- " + data.getChatId());
+					ChatServiceModel response = chatService.getChatsById(data.getChatId());
+					user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
 				}
 			}
 		};
@@ -292,27 +289,21 @@ public class SocketIOConfig {
 
 	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {
 		return (senderClient, data, ackowledge) -> {
-			if(checkIfIsAllowedToSend(senderClient, "Group- " + data.getChatId())) {
-				UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
-						data.getUserId(),
-						data.getChatId(),
-						false
-						);	
-				server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
-				for (SocketIOClient user : server.getAllClients()) {
-					String authorIdS = user.get(CLIENT_USER_ID_PARAM);
-					Integer authorId = Integer.valueOf(authorIdS);
-					if(data.getUserId() == authorId) {	
-						user.leaveRoom("Group- " + data.getChatId());
-						break;
-					}
-				}
-			}
+			
 			UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
 					data.getUserId(),
 					data.getChatId(),
 					false
 					);	
+			server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
+			for (SocketIOClient user : server.getAllClients()) {
+				String authorIdS = user.get(CLIENT_USER_ID_PARAM);
+				Integer authorId = Integer.valueOf(authorIdS);
+				if(data.getUserId() == authorId) {	
+					user.leaveRoom("Group- " + data.getChatId());
+					break;
+				}
+			}	
 			server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 		};
 

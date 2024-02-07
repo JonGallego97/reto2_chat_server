@@ -18,6 +18,7 @@ public interface ChatService {
 	ResponseEntity<?> removeUsersFromChat(int chatId,List<UsersFromChatsPostRequest> usersToRemove);
 	ResponseEntity<?> getUserNotInChat(int chatId);
 	ResponseEntity<?> getUserInChat(int chatId, int userId);
+	ResponseEntity<?> getPublicChats(int id);
 
 	
 }

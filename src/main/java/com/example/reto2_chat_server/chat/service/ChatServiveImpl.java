@@ -16,12 +16,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
 import com.example.reto2_chat_server.chat.repository.Chat;
 import com.example.reto2_chat_server.chat.repository.ChatRepository;
 import com.example.reto2_chat_server.chat.repository.ForeignKeysFromChatsDAO;
+import com.example.reto2_chat_server.chat.repository.MessageRepository;
 import com.example.reto2_chat_server.chat.repository.UserChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserInfo;
 import com.example.reto2_chat_server.chat.repository.UserInfoDao;
@@ -31,6 +33,8 @@ import com.example.reto2_chat_server.chat.repository.UsersFromChatRepository;
 import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.Message;
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
+import com.example.reto2_chat_server.security.user.repository.UserRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -38,11 +42,22 @@ public class ChatServiveImpl implements ChatService{
 	@Autowired
 	private ChatRepository chatRepository;
 
+    @Transactional
+    public void deleteChatByIdWithTransaction(int id) {
+        chatRepository.deleteChatById(id);
+    }
+    
+    @Autowired
+    private UserRepository userRepo;
+	
 	@Autowired
 	private UserChatRepository userRepository;
 	
 	@Autowired
 	private UsersFromChatRepository usersFromChatRepository;
+	
+	@Autowired
+	private MessageRepository messageRepository;
 	
 	@Override
 	public List<Integer> getChatsIdsByUserId(Integer userId) {
@@ -63,9 +78,7 @@ public class ChatServiveImpl implements ChatService{
 	    Chat chatOptional = chatRepository.findById(id).orElseThrow(
 	    		() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "No encontrado")
 	    		);
-	    System.out.println("a");
 	    ChatServiceModel newChat = deDAOaService(chatOptional);
-	    System.out.println("a");
 	    return newChat;
 	}
 
@@ -190,17 +203,14 @@ public class ChatServiveImpl implements ChatService{
 
 	@Override
 	public ResponseEntity<?> deleteChatById(Integer id) {
-		// TODO Auto-generated method stub
-		try {
-			chatRepository.deleteById(id);
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-
-
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"chat no encontrado");
-
-		}
+	    try {        
+	        chatRepository.deleteById(id);
+	        return new ResponseEntity(HttpStatus.NO_CONTENT);
+	    } catch (EmptyResultDataAccessException e) {
+	        throw new ResponseStatusException(HttpStatus.CONFLICT,"chat no encontrado");
+	    }
 	}
+
 
 
 
@@ -304,14 +314,26 @@ public class ChatServiveImpl implements ChatService{
 	@Override
 	public ResponseEntity<?> getUserNotInChat(int chatId) {
 	    try {
-	        List<UserChatsDAO> allUsers = userRepository.findAllByOrderByEmail();
-
-	        List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
+	    	
+	    	Optional<Chat> chat = chatRepository.findById(chatId);
+		    List<UserChatsDAO> allUsers = userRepository.findAllByOrderByEmail();
+		    List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
+		    List<String> result = new ArrayList<String>();
+	    	if(!chat.get().isPublic()){
+	    		List<String> listOfAllAlumnos = userRepo.findEmailsByRoleId();	
+	    		for (String string : listOfAllAlumnos) {
+	    			result.add(string);
+				}
+	    		for (String string2 : emailsInChat) {
+	    			result.add(string2);
+				}
+	    	}
+	        
 
 	        List<UserInfo> usersNotInChat = new ArrayList<>();
 
 	        for (UserChatsDAO user : allUsers) {
-	            if (!emailsInChat.contains(user.getEmail())) {
+	            if (!result.contains(user.getEmail())) {
 	                UserInfo userInfo = new UserInfo(user.getEmail(), user.getId());
 	                usersNotInChat.add(userInfo);
 	            }
@@ -319,6 +341,7 @@ public class ChatServiveImpl implements ChatService{
 
 	        return ResponseEntity.ok(usersNotInChat);
 	    } catch (Exception e) {
+	    	System.out.println(e.getMessage());
 	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
 	    }
 	}
@@ -338,6 +361,37 @@ public class ChatServiveImpl implements ChatService{
 			}
 			 System.out.println(usersInChatInto.toString());
 			 return ResponseEntity.ok(usersInChatInto);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
+	    }
+	}
+
+
+	@Override
+	public ResponseEntity<?> getPublicChats(int id) {
+		try {
+
+			List<ChatShow> listOfChatsUser = chatRepository.findAllUserChatPublic(id);
+			
+			List<ChatShow> listOfChatsPublic = chatRepository.findAllChatPublic(id);
+			List<ChatShowResponse> respone = new ArrayList<ChatShowResponse>();
+			
+			for (ChatShow chatShow : listOfChatsPublic) {
+				boolean i = false;
+				for (ChatShow chatShowUser : listOfChatsUser) {
+					if(chatShow.getChatId() == chatShowUser.getChatId()) {
+						i = true;
+						break;
+					}
+				}
+				if(!i) {
+					respone.add(new ChatShowResponse(chatShow.getChatId(), chatShow.getName()));
+				}
+				
+			}
+			System.out.println(respone.toString());
+			return ResponseEntity.ok(respone);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");

@@ -22,6 +22,8 @@ public interface UserChatRepository extends CrudRepository<UserChatsDAO, Integer
     	List<UserInfoDao> findNonAdminUsersInChat(@Param("chatId") int chatId, @Param("userId") int userId);
 
     List<UserChatsDAO> findAllByOrderByEmail();
+  
+
 
 
 

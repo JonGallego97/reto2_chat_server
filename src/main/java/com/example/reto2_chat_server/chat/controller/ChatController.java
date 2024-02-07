@@ -137,5 +137,16 @@ public class ChatController {
 		}
 	}
 
+	
+	@GetMapping("/chats/public")
+	public ResponseEntity<?> getAllPublicChat(Authentication authentication) {
+		try {
+			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+			return chatService.getPublicChats(userDetails.getId());
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		}
+	}
+
 
 }
