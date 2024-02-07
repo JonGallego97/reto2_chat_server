@@ -37,6 +37,8 @@ import com.example.reto2_chat_server.chat.repository.UsersFromChatRepository;
 import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.Message;
 import com.example.reto2_chat_server.model.message.MessageServiceModel;
+import com.example.reto2_chat_server.security.user.repository.UserRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -48,6 +50,9 @@ public class ChatServiveImpl implements ChatService{
     public void deleteChatByIdWithTransaction(int id) {
         chatRepository.deleteChatById(id);
     }
+    
+    @Autowired
+    private UserRepository userRepo;
 	
 	@Autowired
 	private UserChatRepository userRepository;
@@ -313,14 +318,26 @@ public class ChatServiveImpl implements ChatService{
 	@Override
 	public ResponseEntity<?> getUserNotInChat(int chatId) {
 	    try {
-	        List<UserChatsDAO> allUsers = userRepository.findAllByOrderByEmail();
-
-	        List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
+	    	
+	    	Optional<Chat> chat = chatRepository.findById(chatId);
+		    List<UserChatsDAO> allUsers = userRepository.findAllByOrderByEmail();
+		    List<String> emailsInChat = userRepository.findEmailsInChat(chatId);
+		    List<String> result = new ArrayList<String>();
+	    	if(!chat.get().isPublic()){
+	    		List<String> listOfAllAlumnos = userRepo.findEmailsByRoleId();	
+	    		for (String string : listOfAllAlumnos) {
+	    			result.add(string);
+				}
+	    		for (String string2 : emailsInChat) {
+	    			result.add(string2);
+				}
+	    	}
+	        
 
 	        List<UserInfo> usersNotInChat = new ArrayList<>();
 
 	        for (UserChatsDAO user : allUsers) {
-	            if (!emailsInChat.contains(user.getEmail())) {
+	            if (!result.contains(user.getEmail())) {
 	                UserInfo userInfo = new UserInfo(user.getEmail(), user.getId());
 	                usersNotInChat.add(userInfo);
 	            }
@@ -328,6 +345,7 @@ public class ChatServiveImpl implements ChatService{
 
 	        return ResponseEntity.ok(usersNotInChat);
 	    } catch (Exception e) {
+	    	System.out.println(e.getMessage());
 	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat not found");
 	    }
 	}
