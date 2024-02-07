@@ -75,6 +75,7 @@ public class SocketIOConfig {
 		config.setOrigin("https://10.5.7.15:443");
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
+		config.setKeyStorePassword(keyStorePassword);
 		InputStream stream = keyStoreFile.getInputStream();
 		config.setKeyStore(stream);
 
