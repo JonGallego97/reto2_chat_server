@@ -1,6 +1,5 @@
 package com.example.reto2_chat_server.security.user.repository;
 
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

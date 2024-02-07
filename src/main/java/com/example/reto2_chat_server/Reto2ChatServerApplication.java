@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Reto2ChatServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Reto2ChatServerApplication.class, args);
+		SpringApplication application = new SpringApplication(Reto2ChatServerApplication.class);
+        application.setAdditionalProfiles("ssl");
+        application.run(args);
 	}
 
 }
