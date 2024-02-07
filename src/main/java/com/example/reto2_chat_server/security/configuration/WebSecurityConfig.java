@@ -37,12 +37,9 @@ public class WebSecurityConfig {
 		httpSecurity.csrf( csrf -> csrf.disable())
 		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests((requests) -> requests
-				//TODO Revisar si hay que permitir alguno más
 				
 				.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 				.requestMatchers(HttpMethod.PUT, "/api/auth/register").authenticated()
-
-				.requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()
 
 				//TODO revisar esto de aqui y ponerlo autenticated
 				.anyRequest().permitAll()

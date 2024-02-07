@@ -72,7 +72,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("https://localhost");
+		config.setOrigin("https://10.5.7.28:443");
 		config.setKeyStorePassword(keyStorePassword);
 		InputStream stream = keyStoreFile.getInputStream();
 		config.setKeyStore(stream);
