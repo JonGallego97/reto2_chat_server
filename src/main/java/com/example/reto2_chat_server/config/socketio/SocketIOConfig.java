@@ -75,10 +75,11 @@ public class SocketIOConfig {
 		config.setOrigin("https://10.5.7.18:443");
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
-		/*
+		config.setKeyStorePassword(keyStorePassword);
 		InputStream stream = keyStoreFile.getInputStream();
 		config.setKeyStore(stream);
-		*/
+
+
 		server = new SocketIOServer(config);
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
 		server.addDisconnectListener(new MyDisconnectListener());
@@ -188,7 +189,6 @@ public class SocketIOConfig {
 
 			if (checkIfIsAllowedToSend(senderClient, data.getRoom())) {
 				// TODO completar el constructor
-
 				// TODO guargar en base de datos
 				UserServiceModel userId = new UserServiceModel();
 				userId.setId(authorId);
@@ -199,7 +199,7 @@ public class SocketIOConfig {
 
 				MessageSend message = new MessageSend(0, data.getType(), data.getMessage(), currentDate,currentDate, userId,
 						new ChatServiceModel(Integer.parseInt(
-								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
+								data.getRoom().substring(data.getRoom().lastIndexOf("Group- ") + "Group- ".length()))));
 				if(data.getType() == DataType.IMAGE) {
 					message.setContent(safeImage(data.getMessage(), authorName));
 				}else if(data.getType() == DataType.FILE) {
@@ -207,6 +207,7 @@ public class SocketIOConfig {
 				}
 
 				Message insertMessage = messageService.insertMessage(message);
+				System.out.println(insertMessage.toString());
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
 						data.getRoom(), data.getType(), authorId, authorName);
 
@@ -235,11 +236,12 @@ public class SocketIOConfig {
 
 		try {// TODO Auto-generated method stub
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-	    String currentDate = dateFormat.format(new java.util.Date());
-	        
+			String currentDate = dateFormat.format(new java.util.Date());
+
 			String extensionArchivo = decetMineType(message);
 			String fileName = authorName + "_" + currentDate;
 			String outputFile = "src/main/resources/static/images/" + fileName;
+			System.out.println(message);
 			byte[] decodedImg = Base64.getDecoder().decode(message.getBytes(StandardCharsets.UTF_8));
 			Path destinationFile = Paths.get(outputFile);
 			Files.write(destinationFile, decodedImg);
@@ -289,7 +291,7 @@ public class SocketIOConfig {
 
 	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {
 		return (senderClient, data, ackowledge) -> {
-			
+
 			UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
 					data.getUserId(),
 					data.getChatId(),
