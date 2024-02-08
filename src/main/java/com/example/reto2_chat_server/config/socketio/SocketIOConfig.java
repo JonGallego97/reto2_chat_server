@@ -78,7 +78,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("https://10.5.7.15:443");
+		config.setOrigin("https://192.168.1.153:443");
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
 		config.setKeyStorePassword(keyStorePassword);
@@ -234,10 +234,50 @@ public class SocketIOConfig {
 
 	}
 
-	private String safeFile(String message, String authorName) {
-		// TODO Auto-generated method stub
-		return null;
+	public String safeFile(String message, String authorName) {
+        try {
+            String currentDate = getCurrentDate();
+            String extensionArchivo = detectFileType(message);
+            String fileName = authorName + "_" + currentDate + extensionArchivo;
+            String outputFile = "src/main/resources/static/files/" + fileName;
+            saveToFile(message, outputFile);
+            return outputFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        return dateFormat.format(new java.util.Date());
+    }
+
+    private void saveToFile(String base64Content, String outputFile) throws IOException {
+        byte[] decodedFile = Base64.getDecoder().decode(base64Content.getBytes());
+        Path destinationFile = Paths.get(outputFile);
+        Files.write(destinationFile, decodedFile);
+    }
+	
+	private String detectFileType(String base64Content) {
+	    HashMap<String, String> signatures = new HashMap<String, String>();
+	    signatures.put("JVBERi0", ".pdf");
+	    signatures.put("UEsDBBQ", ".docx"); // Signature for Word documents
+	    signatures.put("504b0304", ".xlsx"); // Signature for Excel documents
+	    signatures.put("D0CF11E0", ".xls"); // Signature for older Excel documents
+	    signatures.put("25504446", ".pdf"); // Signature for PDF documents
+	    // You can add more signatures for other file types here
+
+	    for (Map.Entry<String, String> entry : signatures.entrySet()) {
+	        String key = entry.getKey();
+	        if (base64Content.startsWith(key)) {
+	            return entry.getValue();
+	        }
+	    }
+	    // If no match is found, return a default extension (you can customize this as needed)
+	    return ".bin";
 	}
+
 
 	private String safeImage(String message, String authorName) {
 
