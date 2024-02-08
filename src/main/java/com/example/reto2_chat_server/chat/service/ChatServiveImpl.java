@@ -23,7 +23,6 @@ import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
 import com.example.reto2_chat_server.chat.repository.Chat;
 import com.example.reto2_chat_server.chat.repository.ChatRepository;
 import com.example.reto2_chat_server.chat.repository.ForeignKeysFromChatsDAO;
-import com.example.reto2_chat_server.chat.repository.MessageRepository;
 import com.example.reto2_chat_server.chat.repository.UserChatsDAO;
 import com.example.reto2_chat_server.chat.repository.UserInfo;
 import com.example.reto2_chat_server.chat.repository.UserInfoDao;
@@ -55,9 +54,6 @@ public class ChatServiveImpl implements ChatService{
 	
 	@Autowired
 	private UsersFromChatRepository usersFromChatRepository;
-	
-	@Autowired
-	private MessageRepository messageRepository;
 	
 	@Override
 	public List<Integer> getChatsIdsByUserId(Integer userId) {
@@ -175,7 +171,6 @@ public class ChatServiveImpl implements ChatService{
 	        Chat chat = chatRepository.findById(chatId)
 	                .orElseThrow(() -> new EntityNotFoundException("Chat no encontrado con ID: " + chatId));
 
-	        //TODO validar que el admin no este en la lista
 	        // Eliminar los usuarios del chat
 	        for (UsersFromChatsPostRequest userToRemove : usersToRemove) {
 	            ForeignKeysFromChatsDAO foreignKeysFromChatsDAO = new ForeignKeysFromChatsDAO(userToRemove.getChatId(), userToRemove.getUserId());
