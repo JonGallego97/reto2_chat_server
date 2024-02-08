@@ -6,6 +6,7 @@ import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
 import com.example.reto2_chat_server.chat.repository.Chat;
 import com.example.reto2_chat_server.chat.service.ChatService;
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;
+import com.example.reto2_chat_server.chat.service.DeleteChat;
 import com.example.reto2_chat_server.chat.service.MessageService;
 import com.example.reto2_chat_server.model.CrateChat;
 import com.example.reto2_chat_server.model.message.DataType;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -80,6 +82,8 @@ public class SocketIOConfig {
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
 		config.setKeyStorePassword(keyStorePassword);
+		InputStream stream = keyStoreFile.getInputStream();
+		config.setKeyStore(stream);
 
 		server = new SocketIOServer(config);
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
@@ -88,6 +92,7 @@ public class SocketIOConfig {
 		server.addEventListener(SocketEvents.ON_ADD_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onAddUser());
 		server.addEventListener(SocketEvents.ON_DELETE_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onDeleteUser());
 		server.addEventListener(SocketEvents.ON_CREATE_CHAT_SEND.value, CrateChat.class, createChat());
+		server.addEventListener(SocketEvents.ON_DELETE_CHAT_SEND.value, DeleteChat.class, deleteChat());
 		server.start();
 
 		return server;
@@ -202,7 +207,7 @@ public class SocketIOConfig {
 
 				MessageSend message = new MessageSend(0, data.getType(), data.getMessage(), currentDate,currentDate, userId,
 						new ChatServiceModel(Integer.parseInt(
-								data.getRoom().substring(data.getRoom().length() - 1, data.getRoom().length()))));
+								data.getRoom().substring(data.getRoom().lastIndexOf("Group- ") + "Group- ".length()))));
 				if(data.getType() == DataType.IMAGE) {
 					message.setContent(safeImage(data.getMessage(), authorName));
 				}else if(data.getType() == DataType.FILE) {
@@ -238,7 +243,7 @@ public class SocketIOConfig {
 
 		try {// TODO Auto-generated method stub
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-	    String currentDate = dateFormat.format(new java.util.Date());
+	        String currentDate = dateFormat.format(new java.util.Date());
 	        
 			String extensionArchivo = decetMineType(message);
 			String fileName = authorName + "_" + currentDate;
@@ -278,10 +283,18 @@ public class SocketIOConfig {
 
 	private DataListener<UsersFromChatsPostRequest> onAddUser() {
 		return (senderClient, data, ackowledge) -> {
+			String authorIdS1 = senderClient.get(CLIENT_USER_ID_PARAM);
+			Integer authorId1 = Integer.valueOf(authorIdS1);
+			System.out.println(data.getUserId());
+			List<UsersFromChatsPostRequest> users = new ArrayList<UsersFromChatsPostRequest>();
+			users.add(new UsersFromChatsPostRequest(data.getUserId(), data.getChatId(), data.isAdmin()));
+			chatService.addUsersToChat(data.getChatId(), users, authorId1, true);
+			
 			for (SocketIOClient user : server.getAllClients()) {
 				String authorIdS = user.get(CLIENT_USER_ID_PARAM);
 				Integer authorId = Integer.valueOf(authorIdS);
 				if(data.getUserId() == authorId) {	
+					
 					user.joinRoom("Group- " + data.getChatId());
 					ChatServiceModel response = chatService.getChatsById(data.getChatId());
 					user.sendEvent(SocketEvents.ON_ADD_USER_CHAT_RECIVE.value, response);
@@ -291,24 +304,42 @@ public class SocketIOConfig {
 
 	}
 	
+	private DataListener<DeleteChat> deleteChat() {
+		return (senderClient, data, ackowledge) -> {
+			String authorIdS1 = senderClient.get(CLIENT_USER_ID_PARAM);
+			Integer authorId1 = Integer.valueOf(authorIdS1);
+			ResponseEntity<?> response = chatService.deleteChatById(data.getChatId(), authorId1);
+			if(response.getStatusCode() == HttpStatus.NO_CONTENT) {
+				System.out.println("a");
+				server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_CHAT_RECIVE.value, senderClient, true);
+				for (SocketIOClient user : server.getAllClients()) {
+					user.leaveRoom("Group- " + data.getChatId());
+				}
+			}
+			
+		};
+	}
+	
 	private DataListener<CrateChat> createChat() {
 		return (senderClient, data, ackowledge) -> {
-			System.out.println("ASDDA");
-			Chat chat = new Chat(data.isPublic(), data.getName());
+			Chat chat = new Chat(data.isaIsPublic(), data.getName());
 			ResponseEntity<?> response = chatService.createChat(chat, data.getUserId());
+			
 			if (response.hasBody() && response.getBody() instanceof ChatServiceModel) {
 				ChatServiceModel chatServiceModel = (ChatServiceModel) response.getBody();
 				UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(data.getUserId(), chatServiceModel.getId(), true);
 				List<UsersFromChatsPostRequest> listRequest = new ArrayList<UsersFromChatsPostRequest>();
 				listRequest.add(creatorUserRequest);
 
-				ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatServiceModel.getId(), listRequest, data.getUserId());
+				ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatServiceModel.getId(), listRequest, data.getUserId(), false);
 				
 				
 				senderClient.joinRoom("Group- " + chatServiceModel.getId());
 				
 				ChatServiceModel chatNew = chatService.getChatsById(chatServiceModel.getId());
 				chatNew.setIdRoom(data.getRoomChatid());
+				chatNew.setUpdatedAt(null);
+				chatNew.setCreatedAt(null);
 				senderClient.sendEvent(SocketEvents.ON_CREATE_CHAT_RECIVE.value, chatNew);
 				 
 			}
@@ -317,12 +348,18 @@ public class SocketIOConfig {
 
 	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {
 		return (senderClient, data, ackowledge) -> {
+			String authorIdS1 = senderClient.get(CLIENT_USER_ID_PARAM);
+			Integer authorId1 = Integer.valueOf(authorIdS1);
 			
+			List<UsersFromChatsPostRequest> users = new ArrayList<UsersFromChatsPostRequest>();
+			users.add(new UsersFromChatsPostRequest(data.getUserId(), data.getChatId(), data.isAdmin()));
+			chatService.removeUsersFromChat(data.getChatId(), users, authorId1);
 			UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
 					data.getUserId(),
 					data.getChatId(),
 					false
 					);	
+			
 			server.getRoomOperations("Group- " + data.getChatId()).sendEvent(SocketEvents.ON_DELETE_USER_CHAT_RECIVE.value, userDeleted);
 			for (SocketIOClient user : server.getAllClients()) {
 				String authorIdS = user.get(CLIENT_USER_ID_PARAM);

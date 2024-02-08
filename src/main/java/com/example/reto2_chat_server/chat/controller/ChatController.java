@@ -57,7 +57,7 @@ public class ChatController {
 			List<UsersFromChatsPostRequest> listRequest = new ArrayList<UsersFromChatsPostRequest>();
 			listRequest.add(creatorUserRequest);
 
-			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatServiceModel.getId(), listRequest, userDetails.getId());
+			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatServiceModel.getId(), listRequest, userDetails.getId(), false);
 			if (addUserResponse.getStatusCode() != HttpStatus.OK) {	        	
 				return new ResponseEntity<ChatServiceModel>(HttpStatus.CONFLICT);
 			}
@@ -70,7 +70,7 @@ public class ChatController {
 	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd, Authentication authentication) {
 		try {
 			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
-			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd, userDetails.getId());
+			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd, userDetails.getId(), true);
 
 			if (addUserResponse.getStatusCode() != HttpStatus.OK) {
 				return new ResponseEntity<>(addUserResponse.getBody(), addUserResponse.getStatusCode());

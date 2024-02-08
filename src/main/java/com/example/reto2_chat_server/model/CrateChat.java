@@ -4,18 +4,18 @@ public class CrateChat {
     private int userId;
 	private String name;
 	private int roomChatid;
-	private boolean isPublic;
+	private boolean aIsPublic;
 	@Override
 	public String toString() {
-		return "CrateChat [userId=" + userId + ", name=" + name + ", roomChatid=" + roomChatid + ", isPublic="
-				+ isPublic + "]";
+		return "CrateChat [userId=" + userId + ", name=" + name + ", roomChatid=" + roomChatid + ", aIsPublic="
+				+ aIsPublic + "]";
 	}
-	public CrateChat(int userId, String name, int roomChatid, boolean isPublic) {
+	public CrateChat(int userId, String name, int roomChatid, boolean aIsPublic) {
 		super();
 		this.userId = userId;
 		this.name = name;
 		this.roomChatid = roomChatid;
-		this.isPublic = isPublic;
+		this.aIsPublic = aIsPublic;
 	}
 	public CrateChat() {
 		super();
@@ -38,13 +38,11 @@ public class CrateChat {
 	public void setRoomChatid(int roomChatid) {
 		this.roomChatid = roomChatid;
 	}
-	public boolean isPublic() {
-		return isPublic;
+	public boolean isaIsPublic() {
+		return aIsPublic;
 	}
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
+	public void setaIsPublic(boolean aIsPublic) {
+		this.aIsPublic = aIsPublic;
 	}
-	
-	
 	
 }

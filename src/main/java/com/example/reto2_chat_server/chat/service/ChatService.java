@@ -14,7 +14,7 @@ public interface ChatService {
 	List<Integer> getChatsIdsByUserId(Integer userId);
 	ResponseEntity<?> createChat(Chat chat, int userId);
 	ResponseEntity<?> deleteChatById(Integer id, int userId);
-	ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd, int userId);
+	ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd, int userId, boolean create);
 	ResponseEntity<?> removeUsersFromChat(int chatId,List<UsersFromChatsPostRequest> usersToRemove, int userId);
 	ResponseEntity<?> getUserNotInChat(int chatId);
 	ResponseEntity<?> getUserInChat(int chatId, int userId);
