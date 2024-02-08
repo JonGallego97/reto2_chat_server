@@ -241,7 +241,6 @@ public class SocketIOConfig {
 			String extensionArchivo = decetMineType(message);
 			String fileName = authorName + "_" + currentDate;
 			String outputFile = "src/main/resources/static/images/" + fileName;
-			System.out.println(message);
 			byte[] decodedImg = Base64.getDecoder().decode(message.getBytes(StandardCharsets.UTF_8));
 			Path destinationFile = Paths.get(outputFile);
 			Files.write(destinationFile, decodedImg);

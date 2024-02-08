@@ -24,6 +24,7 @@ import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
 import jakarta.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("api")
 public class ChatController {
@@ -37,35 +38,36 @@ public class ChatController {
 	JwtTokenUtil tokenUtil;
 
 	@GetMapping("/chats")
-    public ResponseEntity<?> chats(Authentication authentication) {
-        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
-        System.out.println(userDetails.getId());
-        List<ChatServiceModel> response = chatService.getChats(userDetails.getId());
+	public ResponseEntity<?> chats(Authentication authentication) {
+		UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+		List<ChatServiceModel> response = chatService.getChats(userDetails.getId());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/chats/{userId}")
-	public ResponseEntity<ChatServiceModel> createChat (@RequestBody ChatPostRequest chatPostRequest, @PathVariable("userId") Integer idUser  ){
+	public ResponseEntity<ChatServiceModel> createChat(@RequestBody ChatPostRequest chatPostRequest,
+			@PathVariable("userId") Integer idUser) {
 		Chat chat = new Chat(chatPostRequest.isPublic(), chatPostRequest.getName());
-		
-		
+
 		ChatServiceModel response = chatService.createChat(chat);
-		if(response !=null) {
-			UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(idUser, response.getId(), true);
+		if (response != null) {
+			UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(idUser, response.getId(),
+					true);
 			List<UsersFromChatsPostRequest> listRequest = new ArrayList<UsersFromChatsPostRequest>();
 			listRequest.add(creatorUserRequest);
 
 			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(response.getId(), listRequest);
-			if (addUserResponse.getStatusCode() != HttpStatus.OK) {	        	
+			if (addUserResponse.getStatusCode() != HttpStatus.OK) {
 				return new ResponseEntity<ChatServiceModel>(HttpStatus.CONFLICT);
 			}
 		}
 
-		return new ResponseEntity<ChatServiceModel>(response,HttpStatus.CREATED);
+		return new ResponseEntity<ChatServiceModel>(response, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/chats/{chatId}/add-users")
-	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd) {
+	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId,
+			@RequestBody List<UsersFromChatsPostRequest> usersToAdd) {
 		try {
 			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd);
 
@@ -82,71 +84,66 @@ public class ChatController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al agregar usuarios al chat.");
 		}
 	}
-	
+
 	@PostMapping("/chats/{chatId}/remove-users")
-	public ResponseEntity<?> removeUsersFromChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToRemove) {
-	    try {
-	    	System.out.println("hola");
-	        ResponseEntity<?> removeUserResponse = chatService.removeUsersFromChat(chatId, usersToRemove);
+	public ResponseEntity<?> removeUsersFromChat(@PathVariable("chatId") int chatId,
+			@RequestBody List<UsersFromChatsPostRequest> usersToRemove) {
+		try {
+			ResponseEntity<?> removeUserResponse = chatService.removeUsersFromChat(chatId, usersToRemove);
 
-	        if (removeUserResponse.getStatusCode() != HttpStatus.OK) {
-	            return new ResponseEntity<>(removeUserResponse.getBody(), removeUserResponse.getStatusCode());
-	        }
+			if (removeUserResponse.getStatusCode() != HttpStatus.OK) {
+				return new ResponseEntity<>(removeUserResponse.getBody(), removeUserResponse.getStatusCode());
+			}
 
-	        return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 
-	    } catch (EntityNotFoundException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar usuarios del chat.");
-	    }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar usuarios del chat.");
+		}
 	}
 
-
-
-
 	@DeleteMapping("/chats/{id}")
-	public ResponseEntity<?> deleteChatById (@PathVariable("id") Integer idChat){
+	public ResponseEntity<?> deleteChatById(@PathVariable("id") Integer idChat) {
 		try {
 			return chatService.deleteChatById(idChat);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Chat no encontrado");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat no encontrado");
 
 		}
 
-
 	}
-	
+
 	@GetMapping("/{chatId}/getUserToAdd")
-	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId){
+	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId) {
 		try {
 			return chatService.getUserNotInChat(chatId);
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Error");
 		}
 	}
 
 	@GetMapping("/{chatId}/getUserToDelete")
-	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId, Authentication authentication) {
+	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId,
+			Authentication authentication) {
 		try {
-	        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 			return chatService.getUserInChat(chatId, userDetails.getId());
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Error");
 		}
 	}
 
-	
 	@GetMapping("/chats/public")
 	public ResponseEntity<?> getAllPublicChat(Authentication authentication) {
 		try {
 			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 			return chatService.getPublicChats(userDetails.getId());
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Error");
 		}
 	}
-
 
 }

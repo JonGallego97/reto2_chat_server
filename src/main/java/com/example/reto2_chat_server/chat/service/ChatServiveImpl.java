@@ -350,7 +350,6 @@ public class ChatServiveImpl implements ChatService{
 	public ResponseEntity<?> getUserInChat(int chatId, int userId) {
 		 try {
 			 List<UserInfoDao> usersInChat = userRepository.findNonAdminUsersInChat(chatId, userId);	
-			 System.out.println("asdasd");
 			 List<UserInfo> usersInChatInto = new ArrayList<>();
 			 for (UserInfoDao userInfo : usersInChat) {
 				UserInfo user = new UserInfo(
@@ -359,7 +358,6 @@ public class ChatServiveImpl implements ChatService{
 						);
 				usersInChatInto.add(user);
 			}
-			 System.out.println(usersInChatInto.toString());
 			 return ResponseEntity.ok(usersInChatInto);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

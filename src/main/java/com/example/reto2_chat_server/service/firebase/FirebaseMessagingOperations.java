@@ -54,7 +54,6 @@ public class FirebaseMessagingOperations implements FirebaseMessagingOperationsS
 			.putData("body", "some data")
 			.build();
     	try {
-    		System.out.println(msg);
 			fcm.sendMulticast(msg);
 			//System.out.println("enviado");
 		} catch (FirebaseMessagingException e) {

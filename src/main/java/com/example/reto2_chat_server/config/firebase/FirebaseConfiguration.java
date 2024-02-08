@@ -30,12 +30,10 @@ public class FirebaseConfiguration {
 		//cargar las credenciales
 		@Bean
 		GoogleCredentials googleCredentials() throws IOException {
-			System.out.println("entra");
 			if (FirebaseApp.getApps().isEmpty()) {
 				// para no usar variable de entorno
 				try {
 		            if (firebaseCredentials != null) {
-		                System.out.println("Firebase Credentials Path: " + firebaseCredentials.getURI());
 		                return GoogleCredentials.fromStream(firebaseCredentials.getInputStream());
 		                
 		            } else {
