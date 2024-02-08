@@ -3,9 +3,11 @@ import java.text.SimpleDateFormat;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
 import com.example.reto2_chat_server.chat.controller.UsersFromChatsPostRequest;
+import com.example.reto2_chat_server.chat.repository.Chat;
 import com.example.reto2_chat_server.chat.service.ChatService;
 import com.example.reto2_chat_server.chat.service.ChatServiceModel;
 import com.example.reto2_chat_server.chat.service.MessageService;
+import com.example.reto2_chat_server.model.CrateChat;
 import com.example.reto2_chat_server.model.message.DataType;
 import com.example.reto2_chat_server.model.message.Message;
 import com.example.reto2_chat_server.model.message.MessageFromClient;
@@ -18,6 +20,7 @@ import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 import io.netty.handler.codec.http.HttpHeaders;
 import jakarta.annotation.PreDestroy;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,8 +80,6 @@ public class SocketIOConfig {
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
 		config.setKeyStorePassword(keyStorePassword);
-		InputStream stream = keyStoreFile.getInputStream();
-		config.setKeyStore(stream);
 
 		server = new SocketIOServer(config);
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
@@ -85,6 +87,7 @@ public class SocketIOConfig {
 		server.addEventListener(SocketEvents.ON_MESSAGE_RECEIVED.value, MessageFromClient.class, onSendMessage());
 		server.addEventListener(SocketEvents.ON_ADD_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onAddUser());
 		server.addEventListener(SocketEvents.ON_DELETE_USER_CHAT_SEND.value, UsersFromChatsPostRequest.class, onDeleteUser());
+		server.addEventListener(SocketEvents.ON_CREATE_CHAT_SEND.value, CrateChat.class, createChat());
 		server.start();
 
 		return server;
@@ -286,6 +289,30 @@ public class SocketIOConfig {
 			}
 		};
 
+	}
+	
+	private DataListener<CrateChat> createChat() {
+		return (senderClient, data, ackowledge) -> {
+			System.out.println("ASDDA");
+			Chat chat = new Chat(data.isPublic(), data.getName());
+			ResponseEntity<?> response = chatService.createChat(chat, data.getUserId());
+			if (response.hasBody() && response.getBody() instanceof ChatServiceModel) {
+				ChatServiceModel chatServiceModel = (ChatServiceModel) response.getBody();
+				UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(data.getUserId(), chatServiceModel.getId(), true);
+				List<UsersFromChatsPostRequest> listRequest = new ArrayList<UsersFromChatsPostRequest>();
+				listRequest.add(creatorUserRequest);
+
+				ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatServiceModel.getId(), listRequest, data.getUserId());
+				
+				
+				senderClient.joinRoom("Group- " + chatServiceModel.getId());
+				
+				ChatServiceModel chatNew = chatService.getChatsById(chatServiceModel.getId());
+				chatNew.setIdRoom(data.getRoomChatid());
+				senderClient.sendEvent(SocketEvents.ON_CREATE_CHAT_RECIVE.value, chatNew);
+				 
+			}
+		};
 	}
 
 	private DataListener<UsersFromChatsPostRequest> onDeleteUser() {

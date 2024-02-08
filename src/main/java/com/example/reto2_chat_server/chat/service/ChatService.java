@@ -12,10 +12,10 @@ public interface ChatService {
 	List<ChatServiceModel> getChats(int id);
 	ChatServiceModel getChatsById(int id);
 	List<Integer> getChatsIdsByUserId(Integer userId);
-	ChatServiceModel createChat(Chat chat);
-	ResponseEntity<?> deleteChatById(Integer id);
-	ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd);
-	ResponseEntity<?> removeUsersFromChat(int chatId,List<UsersFromChatsPostRequest> usersToRemove);
+	ResponseEntity<?> createChat(Chat chat, int userId);
+	ResponseEntity<?> deleteChatById(Integer id, int userId);
+	ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd, int userId);
+	ResponseEntity<?> removeUsersFromChat(int chatId,List<UsersFromChatsPostRequest> usersToRemove, int userId);
 	ResponseEntity<?> getUserNotInChat(int chatId);
 	ResponseEntity<?> getUserInChat(int chatId, int userId);
 	ResponseEntity<?> getPublicChats(int id);

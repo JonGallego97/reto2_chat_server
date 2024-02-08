@@ -105,24 +105,43 @@ public class ChatServiveImpl implements ChatService{
 	    return response;
 	}
 	@Override
-	public ChatServiceModel createChat(Chat chat) {
+	public ResponseEntity<?> createChat(Chat chat, int userId) {
 		 Date currentDate = new Date();
          Timestamp currentTimestamp = new Timestamp(currentDate.getTime());
          chat.setCreatedat(currentTimestamp);
          chat.setUpdatedat(currentTimestamp);
-		 chat = chatRepository.save(chat);
-		 
+		 if(!chat.isPublic() && !canCreate(userId)) {
+			 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		 }
           
-		
+		 for (Chat chat1 : chatRepository.findAll()) {
+			if(chat1.getName().equals(chat.getName())) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+		}
+
+		chat = chatRepository.save(chat);
 		ChatServiceModel response = new ChatServiceModel(chat.getId(), chat.isPublic(), chat.getName(),chat.getCreatedat(), chat.getUpdatedat());
-		return response;
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
+	private boolean canCreate(int userId) {
+		if(userRepo.canSend(userId)) {
+			System.out.println("Can create");
+			return true;
+		}
+		return false;
+	}
+
+
 	@Override
-	public ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd) {
+	public ResponseEntity<?> addUsersToChat(int chatId, List<UsersFromChatsPostRequest> usersToAdd, int userId) {
 		// TODO Auto-generated method stub
 		 try {
+			 if(!canAddPeple(chatId, userId)) {
+				 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			 }
 			 
 			 List<UsersFromChatDAO> listDAO = new ArrayList<UsersFromChatDAO>(); 
 			 
@@ -167,10 +186,19 @@ public class ChatServiveImpl implements ChatService{
 
 	        }
 	}
-	
+
+
 	@Override
-	public ResponseEntity<?> removeUsersFromChat(int chatId, List<UsersFromChatsPostRequest> usersToRemove) {
+	public ResponseEntity<?> removeUsersFromChat(int chatId, List<UsersFromChatsPostRequest> usersToRemove, int userId) {
 	    try {
+	    	
+	    	if (!(usersToRemove.size() == 1 && usersToRemove.get(0).getUserId() == userId)) {
+	    	    if(!canAddPeple(chatId, userId)) {
+	    	    	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	    	    }
+	    	}
+
+	    	
 	        // Obtener el chat desde la base de datos
 	        Chat chat = chatRepository.findById(chatId)
 	                .orElseThrow(() -> new EntityNotFoundException("Chat no encontrado con ID: " + chatId));
@@ -197,21 +225,39 @@ public class ChatServiveImpl implements ChatService{
 	    }
 	}
 
-
-	
+	private boolean canAddPeple(int chatId, int userId) {
+		if(userRepository.isAdminInChat(chatId, userId)) {
+			return true;
+		}
+		return false;
+	}
 
 
 	@Override
-	public ResponseEntity<?> deleteChatById(Integer id) {
+	public ResponseEntity<?> deleteChatById(Integer id, int userChat) {
 	    try {        
-	        chatRepository.deleteById(id);
-	        return new ResponseEntity(HttpStatus.NO_CONTENT);
+	    	if(canDeleteInChat(id, userChat)) {
+		        chatRepository.deleteById(id);
+		        return new ResponseEntity(HttpStatus.NO_CONTENT);
+	    	}else {
+	    		return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+	    	} 
 	    } catch (EmptyResultDataAccessException e) {
 	        throw new ResponseStatusException(HttpStatus.CONFLICT,"chat no encontrado");
 	    }
 	}
 
 
+
+
+	private boolean canDeleteInChat(Integer id, int userChat) {
+		for (UserInfoDao userId: userRepository.findAdminUsersInChat(id)) {
+			if(userChat == userId.getUserId()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 	public List<Integer> getChatIds(int id) {
