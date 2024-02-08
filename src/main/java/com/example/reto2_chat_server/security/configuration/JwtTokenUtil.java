@@ -66,7 +66,6 @@ public class JwtTokenUtil {
 
 			
 			return true;
-			// TODO: handle exception
 		} catch (ExpiredJwtException ex) {
 
 			LOGGER.error("JWT expired", ex.getMessage());

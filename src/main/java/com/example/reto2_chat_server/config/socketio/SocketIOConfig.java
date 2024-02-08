@@ -162,7 +162,6 @@ public class SocketIOConfig {
 		}
 
 		private void notificateDisconnectToUsers(SocketIOClient client) {
-			// TODO actualizar campos segun el token
 			String room = null;
 			String message = "el usuario se ha desconectado";
 			String authorIdS = client.get(CLIENT_USER_ID_PARAM);
@@ -188,8 +187,6 @@ public class SocketIOConfig {
 					authorName, data.toString());
 
 			if (checkIfIsAllowedToSend(senderClient, data.getRoom())) {
-				// TODO completar el constructor
-				// TODO guargar en base de datos
 				UserServiceModel userId = new UserServiceModel();
 				userId.setId(authorId);
 				long currentTimeMillis = System.currentTimeMillis();
@@ -220,7 +217,7 @@ public class SocketIOConfig {
 
 
 			} else {
-				// TODO falta manejar el no poder enviar el mensaje
+				System.out.println("No se pudo enviar el mensaje");
 			}
 
 		};

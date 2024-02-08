@@ -52,7 +52,6 @@ public class SocketController {
 	@PostMapping("/send-message")
 	public String sendMessage(
 			@RequestBody MessageFromServer message) {
-		//TODO modificar el constructor
 		MessageFromServer messageFromServer = new MessageFromServer(0, MessageType.CLIENT, message.getMessage(), "default-room",DataType.TEXT , 1, "ASD");
 		socketIOServer.getBroadcastOperations().sendEvent(SocketEvents.ON_SEND_MESSAGE.value, messageFromServer);
 		return "enviado";
@@ -67,7 +66,6 @@ public class SocketController {
 		if (client != null) {
 			client.joinRoom(chatId);
 			socketIOServer.getRoomOperations(chatId).sendEvent(SocketEvents.ON_SEND_MESSAGE.value, idUser + " Se ha unido");
-			//TODO notificar al user que se ha unido
 			return "el usuario se ha unido correctamente";
 		}else {
 
