@@ -45,29 +45,32 @@ public class ChatController {
 	}
 
 	@PostMapping("/chats/{userId}")
-	public ResponseEntity<ChatServiceModel> createChat (@RequestBody ChatPostRequest chatPostRequest, @PathVariable("userId") Integer idUser  ){
+	public ResponseEntity<ChatServiceModel> createChat (@RequestBody ChatPostRequest chatPostRequest, @PathVariable("userId") Integer idUser, Authentication authentication){
 		Chat chat = new Chat(chatPostRequest.isPublic(), chatPostRequest.getName());
+        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 		
 		
-		ChatServiceModel response = chatService.createChat(chat);
-		if(response !=null) {
-			UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(idUser, response.getId(), true);
+        ResponseEntity<?> response = chatService.createChat(chat, userDetails.getId());
+        if (response.hasBody() && response.getBody() instanceof ChatServiceModel) {
+        	ChatServiceModel chatServiceModel = (ChatServiceModel) response.getBody();
+			UsersFromChatsPostRequest creatorUserRequest = new UsersFromChatsPostRequest(idUser, chatServiceModel.getId(), true);
 			List<UsersFromChatsPostRequest> listRequest = new ArrayList<UsersFromChatsPostRequest>();
 			listRequest.add(creatorUserRequest);
 
-			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(response.getId(), listRequest);
+			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatServiceModel.getId(), listRequest, userDetails.getId());
 			if (addUserResponse.getStatusCode() != HttpStatus.OK) {	        	
 				return new ResponseEntity<ChatServiceModel>(HttpStatus.CONFLICT);
 			}
 		}
 
-		return new ResponseEntity<ChatServiceModel>(response,HttpStatus.CREATED);
+		return (ResponseEntity<ChatServiceModel>) response;
 	}
 
 	@PostMapping("/chats/{chatId}/add-users")
-	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd) {
+	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd, Authentication authentication) {
 		try {
-			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd);
+			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd, userDetails.getId());
 
 			if (addUserResponse.getStatusCode() != HttpStatus.OK) {
 				return new ResponseEntity<>(addUserResponse.getBody(), addUserResponse.getStatusCode());
@@ -84,10 +87,10 @@ public class ChatController {
 	}
 	
 	@PostMapping("/chats/{chatId}/remove-users")
-	public ResponseEntity<?> removeUsersFromChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToRemove) {
+	public ResponseEntity<?> removeUsersFromChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToRemove, Authentication authentication) {
 	    try {
-	    	System.out.println("hola");
-	        ResponseEntity<?> removeUserResponse = chatService.removeUsersFromChat(chatId, usersToRemove);
+			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+	        ResponseEntity<?> removeUserResponse = chatService.removeUsersFromChat(chatId, usersToRemove, userDetails.getId());
 
 	        if (removeUserResponse.getStatusCode() != HttpStatus.OK) {
 	            return new ResponseEntity<>(removeUserResponse.getBody(), removeUserResponse.getStatusCode());
@@ -107,9 +110,12 @@ public class ChatController {
 
 
 	@DeleteMapping("/chats/{id}")
-	public ResponseEntity<?> deleteChatById (@PathVariable("id") Integer idChat){
+	public ResponseEntity<?> deleteChatById (@PathVariable("id") Integer idChat, Authentication authentication) {
+        
 		try {
-			return chatService.deleteChatById(idChat);
+			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+	        System.out.println(userDetails.getId());
+			return chatService.deleteChatById(idChat, userDetails.getId());
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT,"Chat no encontrado");
 
