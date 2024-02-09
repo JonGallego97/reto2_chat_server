@@ -12,7 +12,13 @@ public class ChatServiceModel {
 	private String name;
 	private Date createdAt;
 	private Date updatedAt;
-
+	private Integer idRoom;
+	public Integer getIdRoom() {
+		return idRoom;
+	}
+	public void setIdRoom(Integer idRoom) {
+		this.idRoom = idRoom;
+	}
 	private List<MessageServiceModel> listMessages;
     private List<UsersFromChatServiceModel> listUsers;
 	

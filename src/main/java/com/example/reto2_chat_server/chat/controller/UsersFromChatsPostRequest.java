@@ -2,6 +2,12 @@ package com.example.reto2_chat_server.chat.controller;
 
 public class UsersFromChatsPostRequest {
 	
+	@Override
+	public String toString() {
+		return "UsersFromChatsPostRequest [userId=" + userId + ", chatId=" + chatId + ", isAdmin=" + isAdmin + "]";
+	}
+
+
 	private Integer userId;
 	
 	private Integer chatId;
