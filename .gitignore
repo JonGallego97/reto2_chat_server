@@ -34,3 +34,4 @@ build/
 
 ### firebase auth ###
 /src/main/resources/firebase-auth.json
+/src/main/resources/static
