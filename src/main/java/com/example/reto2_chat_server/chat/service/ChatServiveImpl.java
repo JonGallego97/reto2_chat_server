@@ -153,7 +153,9 @@ public class ChatServiveImpl implements ChatService {
 		// TODO Auto-generated method stub
 		 try {
 			 if(!canAddPeple(chatId, userId) && created) {
-				 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+				 if(!(usersToAdd.size() == 1 && usersToAdd.get(0).getUserId() == userId)) {
+					 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);					 
+				 }
 			 }
 			 System.out.println(chatId + " "+ usersToAdd.size() + " "+ userId);
 			 List<UsersFromChatDAO> listDAO = new ArrayList<UsersFromChatDAO>(); 
