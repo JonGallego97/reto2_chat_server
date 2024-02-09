@@ -79,11 +79,13 @@ public class SocketIOConfig {
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
 		config.setOrigin("https://10.5.7.15:443");
+
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
 		config.setKeyStorePassword(keyStorePassword);
 		InputStream stream = keyStoreFile.getInputStream();
 		config.setKeyStore(stream);
+
 
 		server = new SocketIOServer(config);
 		server.addConnectListener(new MyConnectListener(server, jwtTokenUtil, chatService));
@@ -169,7 +171,6 @@ public class SocketIOConfig {
 		}
 
 		private void notificateDisconnectToUsers(SocketIOClient client) {
-			// TODO actualizar campos segun el token
 			String room = null;
 			String message = "el usuario se ha desconectado";
 			String authorIdS = client.get(CLIENT_USER_ID_PARAM);
@@ -195,9 +196,6 @@ public class SocketIOConfig {
 					authorName, data.toString());
 
 			if (checkIfIsAllowedToSend(senderClient, data.getRoom())) {
-				// TODO completar el constructor
-
-				// TODO guargar en base de datos
 				UserServiceModel userId = new UserServiceModel();
 				userId.setId(authorId);
 				long currentTimeMillis = System.currentTimeMillis();
@@ -215,6 +213,7 @@ public class SocketIOConfig {
 				}
 
 				Message insertMessage = messageService.insertMessage(message);
+				System.out.println(insertMessage.toString());
 				MessageFromServer messageFromServer = new MessageFromServer(insertMessage.getId(), MessageType.CLIENT, data.getMessage(),
 						data.getRoom(), data.getType(), authorId, authorName);
 
@@ -227,7 +226,7 @@ public class SocketIOConfig {
 
 
 			} else {
-				// TODO falta manejar el no poder enviar el mensaje
+				System.out.println("No se pudo enviar el mensaje");
 			}
 
 		};
@@ -288,7 +287,6 @@ public class SocketIOConfig {
 			String extensionArchivo = decetMineType(message);
 			String fileName = authorName + "_" + currentDate;
 			String outputFile = "src/main/resources/static/images/" + fileName;
-			System.out.println(message);
 			byte[] decodedImg = Base64.getDecoder().decode(message.getBytes(StandardCharsets.UTF_8));
 			Path destinationFile = Paths.get(outputFile);
 			Files.write(destinationFile, decodedImg);
@@ -395,6 +393,7 @@ public class SocketIOConfig {
 			List<UsersFromChatsPostRequest> users = new ArrayList<UsersFromChatsPostRequest>();
 			users.add(new UsersFromChatsPostRequest(data.getUserId(), data.getChatId(), data.isAdmin()));
 			chatService.removeUsersFromChat(data.getChatId(), users, authorId1);
+
 			UsersFromChatsPostRequest userDeleted = new UsersFromChatsPostRequest(
 					data.getUserId(),
 					data.getChatId(),

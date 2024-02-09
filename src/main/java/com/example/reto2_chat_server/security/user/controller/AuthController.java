@@ -54,7 +54,6 @@ public class AuthController {
 			AuthResponse response = new AuthResponse(userServiceModel.getEmail(), accessToken);
 			return ResponseEntity.ok().body(response);
 		} catch (BadCredentialsException ex) {
-			// TODO: handle exception
 			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
@@ -119,7 +118,6 @@ public class AuthController {
 			response.setRoles(listRoles);
 
 		}catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 		}
 
