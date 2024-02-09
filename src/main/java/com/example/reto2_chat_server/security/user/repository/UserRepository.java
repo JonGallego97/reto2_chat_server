@@ -13,7 +13,8 @@ public interface UserRepository extends CrudRepository<UserDAO, Integer> {
 	@Query("SELECT u.email FROM UserDAO u JOIN u.listRoles r WHERE r.id = 2")
     List<String> findEmailsByRoleId();
 
-	@Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserDAO u JOIN u.listRoles r WHERE u.id = :userId AND r.id = 2")
-    boolean canSend(@Param("userId") int userId);
+	@Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserDAO u JOIN u.listRoles r WHERE u.id = :userId AND r.id IN (1, 2)")
+	boolean canSend(@Param("userId") int userId);
+
 
 }

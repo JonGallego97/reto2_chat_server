@@ -375,9 +375,11 @@ public class SocketIOConfig {
 				senderClient.joinRoom("Group- " + chatServiceModel.getId());
 				
 				ChatServiceModel chatNew = chatService.getChatsById(chatServiceModel.getId());
-				chatNew.setIdRoom(data.getRoomChatid());
+				System.out.println(data.getRoomChatId());
+				chatNew.setIdRoom(data.getRoomChatId());
 				chatNew.setUpdatedAt(null);
 				chatNew.setCreatedAt(null);
+				chatNew.setPublic(data.isaIsPublic());
 				senderClient.sendEvent(SocketEvents.ON_CREATE_CHAT_RECIVE.value, chatNew);
 				 
 			}

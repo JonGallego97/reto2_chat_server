@@ -3,22 +3,12 @@ package com.example.reto2_chat_server.model;
 public class CrateChat {
     private int userId;
 	private String name;
-	private int roomChatid;
+	private int roomChatId;
 	private boolean aIsPublic;
 	@Override
 	public String toString() {
-		return "CrateChat [userId=" + userId + ", name=" + name + ", roomChatid=" + roomChatid + ", aIsPublic="
+		return "CrateChat [userId=" + userId + ", name=" + name + ", roomChatId=" + roomChatId + ", aIsPublic="
 				+ aIsPublic + "]";
-	}
-	public CrateChat(int userId, String name, int roomChatid, boolean aIsPublic) {
-		super();
-		this.userId = userId;
-		this.name = name;
-		this.roomChatid = roomChatid;
-		this.aIsPublic = aIsPublic;
-	}
-	public CrateChat() {
-		super();
 	}
 	public int getUserId() {
 		return userId;
@@ -32,11 +22,11 @@ public class CrateChat {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getRoomChatid() {
-		return roomChatid;
+	public int getRoomChatId() {
+		return roomChatId;
 	}
-	public void setRoomChatid(int roomChatid) {
-		this.roomChatid = roomChatid;
+	public void setRoomChatId(int roomChatId) {
+		this.roomChatId = roomChatId;
 	}
 	public boolean isaIsPublic() {
 		return aIsPublic;
@@ -44,5 +34,16 @@ public class CrateChat {
 	public void setaIsPublic(boolean aIsPublic) {
 		this.aIsPublic = aIsPublic;
 	}
+	public CrateChat(int userId, String name, int roomChatId, boolean aIsPublic) {
+		super();
+		this.userId = userId;
+		this.name = name;
+		this.roomChatId = roomChatId;
+		this.aIsPublic = aIsPublic;
+	}
+	public CrateChat() {
+		super();
+	}
+	
 	
 }
