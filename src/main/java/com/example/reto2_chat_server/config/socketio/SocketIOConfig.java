@@ -72,7 +72,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("https://10.5.7.18:443");
+		config.setOrigin("https://10.5.7.15:443");
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
 		config.setKeyStorePassword(keyStorePassword);
