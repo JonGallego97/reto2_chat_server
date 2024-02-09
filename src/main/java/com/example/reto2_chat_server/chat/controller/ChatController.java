@@ -24,6 +24,7 @@ import com.example.reto2_chat_server.security.configuration.JwtTokenUtil;
 import com.example.reto2_chat_server.security.user.service.UserServiceModel;
 
 import jakarta.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("api")
 public class ChatController {
@@ -37,10 +38,9 @@ public class ChatController {
 	JwtTokenUtil tokenUtil;
 
 	@GetMapping("/chats")
-    public ResponseEntity<?> chats(Authentication authentication) {
-        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
-        System.out.println(userDetails.getId());
-        List<ChatServiceModel> response = chatService.getChats(userDetails.getId());
+	public ResponseEntity<?> chats(Authentication authentication) {
+		UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+		List<ChatServiceModel> response = chatService.getChats(userDetails.getId());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -68,6 +68,7 @@ public class ChatController {
 
 	@PostMapping("/chats/{chatId}/add-users")
 	public ResponseEntity<?> addUsersToChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToAdd, Authentication authentication) {
+
 		try {
 			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 			ResponseEntity<?> addUserResponse = chatService.addUsersToChat(chatId, usersToAdd, userDetails.getId(), true);
@@ -85,74 +86,69 @@ public class ChatController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al agregar usuarios al chat.");
 		}
 	}
-	
+
 	@PostMapping("/chats/{chatId}/remove-users")
 	public ResponseEntity<?> removeUsersFromChat(@PathVariable("chatId") int chatId, @RequestBody List<UsersFromChatsPostRequest> usersToRemove, Authentication authentication) {
 	    try {
 			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 	        ResponseEntity<?> removeUserResponse = chatService.removeUsersFromChat(chatId, usersToRemove, userDetails.getId());
 
-	        if (removeUserResponse.getStatusCode() != HttpStatus.OK) {
-	            return new ResponseEntity<>(removeUserResponse.getBody(), removeUserResponse.getStatusCode());
-	        }
 
-	        return new ResponseEntity<>(HttpStatus.OK);
+			if (removeUserResponse.getStatusCode() != HttpStatus.OK) {
+				return new ResponseEntity<>(removeUserResponse.getBody(), removeUserResponse.getStatusCode());
+			}
 
-	    } catch (EntityNotFoundException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.OK);
 
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar usuarios del chat.");
-	    }
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar usuarios del chat.");
+		}
 	}
-
-
-
 
 	@DeleteMapping("/chats/{id}")
 	public ResponseEntity<?> deleteChatById (@PathVariable("id") Integer idChat, Authentication authentication) {
-        
 		try {
 			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 	        System.out.println(userDetails.getId());
 			return chatService.deleteChatById(idChat, userDetails.getId());
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Chat no encontrado");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat no encontrado");
 
 		}
 
-
 	}
-	
+
 	@GetMapping("/{chatId}/getUserToAdd")
-	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId){
+	public ResponseEntity<?> getAllUsersToAddToChat(@PathVariable("chatId") int chatId) {
 		try {
 			return chatService.getUserNotInChat(chatId);
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Error");
 		}
 	}
 
 	@GetMapping("/{chatId}/getUserToDelete")
-	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId, Authentication authentication) {
+	public ResponseEntity<?> getAllUsersToDeleteToChat(@PathVariable("chatId") int chatId,
+			Authentication authentication) {
 		try {
-	        UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
+			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 			return chatService.getUserInChat(chatId, userDetails.getId());
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Error");
 		}
 	}
 
-	
 	@GetMapping("/chats/public")
 	public ResponseEntity<?> getAllPublicChat(Authentication authentication) {
 		try {
 			UserServiceModel userDetails = (UserServiceModel) authentication.getPrincipal();
 			return chatService.getPublicChats(userDetails.getId());
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT,"Error");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Error");
 		}
 	}
-
 
 }

@@ -20,7 +20,6 @@ public class FirebaseMessagingOperations implements FirebaseMessagingOperationsS
     	this.fcm = fcm;
     }
 	
-	// TODO falta modificar los parametros de entrada para no hardcodear
 	@Override
     public void sendMulticastNotification(List deviceTokens) {
     	
@@ -54,7 +53,6 @@ public class FirebaseMessagingOperations implements FirebaseMessagingOperationsS
 			.putData("body", "some data")
 			.build();
     	try {
-    		System.out.println(msg);
 			fcm.sendMulticast(msg);
 			//System.out.println("enviado");
 		} catch (FirebaseMessagingException e) {
