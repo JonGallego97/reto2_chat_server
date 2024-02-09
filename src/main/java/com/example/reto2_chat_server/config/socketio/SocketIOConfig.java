@@ -78,7 +78,7 @@ public class SocketIOConfig {
 		config.setHostname(host);
 		config.setPort(port);
 		config.setAllowHeaders("Authorization");
-		config.setOrigin("https://192.168.1.153:443");
+		config.setOrigin("https://10.5.7.15:443");
 		config.setMaxFramePayloadLength(2621440);
 		config.setMaxHttpContentLength(2621440);
 		config.setKeyStorePassword(keyStorePassword);
@@ -326,6 +326,7 @@ public class SocketIOConfig {
 			String authorIdS1 = senderClient.get(CLIENT_USER_ID_PARAM);
 			Integer authorId1 = Integer.valueOf(authorIdS1);
 			System.out.println(data.getUserId());
+			System.out.println(authorId1);
 			List<UsersFromChatsPostRequest> users = new ArrayList<UsersFromChatsPostRequest>();
 			users.add(new UsersFromChatsPostRequest(data.getUserId(), data.getChatId(), data.isAdmin()));
 			chatService.addUsersToChat(data.getChatId(), users, authorId1, true);
